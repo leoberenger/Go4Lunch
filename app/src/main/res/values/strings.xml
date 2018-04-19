@@ -3,4 +3,10 @@
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDo9fmtrQ9rViuvzU0dEVklA5L2h8mEsq4</string>
 
+    <!--    Permissions    -->
+    <string name="permission_rationale_location">Access to the location service is required</string>
+    <string name="location_permission_denied">Location service denied</string>
+    <string name="permission_required_toast">Location permission is required</string>
+
+
 </resources>

@@ -17,14 +17,24 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         configureAndShowSearchFragment();
+        //configureAndShowMapFragment();
     }
 
     private void configureAndShowSearchFragment() {
 
-        RestoListFragment mRestoListFragment = new RestoListFragment();
+        RestoListFragment restoListFragment = new RestoListFragment();
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.activity_main_frame_layout, mRestoListFragment)
+                .add(R.id.activity_main_frame_layout, restoListFragment)
+                .commit();
+    }
+
+    private void configureAndShowMapFragment() {
+
+        MapsFragment mapsFragment = new MapsFragment();
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.activity_main_frame_layout, mapsFragment)
                 .commit();
     }
 }
