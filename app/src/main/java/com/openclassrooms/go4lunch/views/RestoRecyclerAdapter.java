@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.RequestManager;
-import com.openclassrooms.mynews.R;
-import com.openclassrooms.mynews.models.API.PlacesAPI;
+import com.openclassrooms.go4lunch.R;
+import com.openclassrooms.go4lunch.api.models.PlacesAPI;
 
 import java.util.List;
 

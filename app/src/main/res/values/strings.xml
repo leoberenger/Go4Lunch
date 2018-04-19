@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Go4Lunch</string>
+
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDo9fmtrQ9rViuvzU0dEVklA5L2h8mEsq4</string>
+
 </resources>
