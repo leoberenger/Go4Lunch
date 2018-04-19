@@ -37,6 +37,9 @@ android:
      # The BuildTools version used by your project
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
 
+    # Android ABI version
+    - ANDROID_ABI=armeabi-v7a
+
     # Specify at least one system image for emulator
     - sys-img-armeabi-v7a-android-$EMULATOR_API_LEVEL
 
@@ -44,29 +47,25 @@ android:
     - extra-android-m2repository
 
 before_script:
-
-- echo no | android create avd --force -n test -t android-$EMULATOR_API_LEVEL --abi armeabi-v7a
+- chmod +x gradlew
+- ./gradlew build jacocoTestReport assembleAndroidTest
+- echo no | android create avd --force -n test -t android-$EMULATOR_API_LEVEL --abi $ANDROID_ABI
 - emulator -avd test -no-skin -no-audio -no-window &
 - android-wait-for-emulator
 - adb shell input keyevent 82 & 
 
-- cd MyNews
-
 script: 
   ./gradlew connectedAndroidTest
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
 before_cache:
-
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
 cache:
-
   directories:
-
     - $HOME/.gradle/caches/
-
     - $HOME/.gradle/wrapper/
-
     - $HOME/.android/build-cache
