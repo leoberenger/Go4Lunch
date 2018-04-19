@@ -22,4 +22,23 @@ before_script:
   - echo no | android create avd --force -n test -t android-$EMULATOR_API_LEVEL --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
-  - ./gradlew connectedCheck
+  - adb shell input keyevent 82 & 
+
+script: 
+  ./gradlew connectedAndroidTest
+
+before_cache:
+
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+
+  directories:
+
+    - $HOME/.gradle/caches/
+
+    - $HOME/.gradle/wrapper/
+
+    - $HOME/.android/build-cache
