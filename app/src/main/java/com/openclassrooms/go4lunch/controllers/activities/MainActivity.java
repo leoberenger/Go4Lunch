@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.openclassrooms.go4lunch.R;
-import com.openclassrooms.go4lunch.controllers.fragments.RestoRecyclerFragment;
+import com.openclassrooms.go4lunch.controllers.fragments.RestoListFragment;
 
 import butterknife.ButterKnife;
 
@@ -21,10 +21,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void configureAndShowSearchFragment() {
 
-        RestoRecyclerFragment mRestoRecyclerFragment = new RestoRecyclerFragment();
+        RestoListFragment mRestoListFragment = new RestoListFragment();
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.activity_main_frame_layout, mRestoRecyclerFragment)
+                .add(R.id.activity_main_frame_layout, mRestoListFragment)
                 .commit();
     }
 }

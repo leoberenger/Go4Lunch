@@ -30,7 +30,7 @@ import io.reactivex.observers.DisposableObserver;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RestoRecyclerFragment extends Fragment {
+public class RestoListFragment extends Fragment {
 
     // FOR DESIGN
     @BindView(R.id.fragment_main_recycler_view)
@@ -41,7 +41,7 @@ public class RestoRecyclerFragment extends Fragment {
     private RestoRecyclerAdapter adapter;
     private List<PlacesAPI.Result> places;
 
-    public RestoRecyclerFragment() { }
+    public RestoListFragment() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,18 +94,18 @@ public class RestoRecyclerFragment extends Fragment {
                 .subscribeWith(new DisposableObserver<PlacesAPI>(){
                     @Override
                     public void onNext(PlacesAPI places) {
-                        Log.e("RestoRecyclerFragment", "On Next");
+                        Log.e("RestoListFragment", "On Next");
                         updateUI(places);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("RestoRecyclerFragment", "On Error"+Log.getStackTraceString(e));
+                        Log.e("RestoListFragment", "On Error"+Log.getStackTraceString(e));
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.e("RestoRecyclerFragment", "On Complete");
+                        Log.e("RestoListFragment", "On Complete");
                     }
                 });
     }
