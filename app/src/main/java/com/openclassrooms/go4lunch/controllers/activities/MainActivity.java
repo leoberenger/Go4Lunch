@@ -1,6 +1,5 @@
 package com.openclassrooms.go4lunch.controllers.activities;
 
-import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -11,14 +10,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,11 +31,9 @@ import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.api.GMPlacesStreams;
 import com.openclassrooms.go4lunch.api.models.PlacesAPI;
 import com.openclassrooms.go4lunch.controllers.fragments.RestoListFragment;
-import com.openclassrooms.go4lunch.utils.PermissionUtils;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
@@ -83,29 +77,14 @@ public class MainActivity extends AppCompatActivity implements
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_main);
 
         mGeoDataClient = Places.getGeoDataClient(getApplicationContext());
-
         mPlaceDetectionClient = Places.getPlaceDetectionClient(getApplicationContext());
-
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Build the map.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
+        configureAndShowMapFragment();
         //configureAndShowSearchFragment();
-    }
-
-    private void configureAndShowSearchFragment() {
-
-        RestoListFragment restoListFragment = new RestoListFragment();
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.activity_main_frame_layout, restoListFragment)
-                .commit();
     }
 
     @Override
@@ -117,11 +96,31 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        this.disposeWhenDestroy();
+
+    // -----------------
+    // FRAGMENTS
+    // -----------------
+
+    private void configureAndShowSearchFragment() {
+
+        RestoListFragment restoListFragment = new RestoListFragment();
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.activity_main_relative_layout, restoListFragment)
+                .commit();
     }
+
+    private void configureAndShowMapFragment(){
+        // Build the map.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+
+    // -----------------
+    // MAP FRAGMENT
+    // -----------------
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -135,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
+        //Position Location Button in the bottom right corner
         positionLocationButton();
     }
 
@@ -175,13 +175,41 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void updateLocationUI() {
+        if (mMap == null) {
+            return;
+        }
+        try {
+            if (mLocationPermissionGranted) {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            } else {
+                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mLastKnownLocation = null;
+                getLocationPermission();
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
 
     private void positionLocationButton(){
         View locationButton = ((View) this.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        rlp.setMargins(0, 0, 30, 30);
+        rlp.setMargins(0, 0, 30, 100);
+    }
+
+    // --------------------------
+    // NEARBY SEARCH HTTP REQUEST
+    // --------------------------
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        this.disposeWhenDestroy();
     }
 
     private void executeHttpRequestWithRetrofit(String position){
@@ -211,11 +239,7 @@ public class MainActivity extends AppCompatActivity implements
             this.mDisposable.dispose();
     }
 
-    // -----------------
-    // UPDATE UI
-    // -----------------
-
-    void updateUI(PlacesAPI results){
+    private void updateUI(PlacesAPI results){
         mMap.clear();
         // This loop will go through all the results and add marker on each location.
         for (int i = 0; i < results.getResults().size(); i++) {
@@ -239,25 +263,6 @@ public class MainActivity extends AppCompatActivity implements
             // move map camera
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-        }
-    }
-
-    private void updateLocationUI() {
-        if (mMap == null) {
-            return;
-        }
-        try {
-            if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                mLastKnownLocation = null;
-                getLocationPermission();
-            }
-        } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
         }
     }
 
