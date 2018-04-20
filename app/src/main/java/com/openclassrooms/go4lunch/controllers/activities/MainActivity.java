@@ -3,11 +3,15 @@ package com.openclassrooms.go4lunch.controllers.activities;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -34,11 +38,15 @@ import com.openclassrooms.go4lunch.controllers.fragments.RestoListFragment;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
 public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback{
+
+    @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigation;
 
     private GoogleMap mMap;
     private String currentPosition;
@@ -76,15 +84,14 @@ public class MainActivity extends AppCompatActivity implements
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
-
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         mGeoDataClient = Places.getGeoDataClient(getApplicationContext());
         mPlaceDetectionClient = Places.getPlaceDetectionClient(getApplicationContext());
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         configureAndShowMapFragment();
-        //configureAndShowSearchFragment();
     }
 
     @Override
