@@ -43,8 +43,7 @@ import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
-public class MainActivity extends AppCompatActivity implements
-        OnMapReadyCallback{
+public class MainActivity extends AppCompatActivity{
 
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigation;
 
@@ -91,7 +90,42 @@ public class MainActivity extends AppCompatActivity implements
         mPlaceDetectionClient = Places.getPlaceDetectionClient(getApplicationContext());
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        configureAndShowMapFragment();
+        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+                switch (item.getItemId()){
+                    case R.id.map:
+                        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
+                        mapFragment.getMapAsync(new OnMapReadyCallback() {
+                            @Override
+                            public void onMapReady(GoogleMap googleMap) {
+                                mMap = googleMap;
+                                // Prompt the user for permission.
+                                getLocationPermission();
+
+                                // Turn on the My Location layer and the related control on the map.
+                                updateLocationUI();
+
+                                // Get the current location of the device and set the position of the map.
+                                getDeviceLocation();
+
+                                //Position Location Button in the bottom right corner
+                                positionLocationButton();
+                            }
+                        });
+                        selectedFragment = mapFragment;
+                        break;
+                    case R.id.restos_list:
+                        selectedFragment = new RestoListFragment();
+                        break;
+                }
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.activity_main_relative_layout, selectedFragment);
+                transaction.commit();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -103,47 +137,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
-    // -----------------
-    // FRAGMENTS
-    // -----------------
-
-    private void configureAndShowSearchFragment() {
-
-        RestoListFragment restoListFragment = new RestoListFragment();
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.activity_main_relative_layout, restoListFragment)
-                .commit();
-    }
-
-    private void configureAndShowMapFragment(){
-        // Build the map.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-    }
-
-
     // -----------------
     // MAP FRAGMENT
     // -----------------
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        // Prompt the user for permission.
-        getLocationPermission();
-
-        // Turn on the My Location layer and the related control on the map.
-        updateLocationUI();
-
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
-
-        //Position Location Button in the bottom right corner
-        positionLocationButton();
-    }
 
     private void getDeviceLocation() {
         /*

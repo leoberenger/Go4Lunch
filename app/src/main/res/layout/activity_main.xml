@@ -14,9 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Import maps fragment -->
-        <include layout="@layout/fragment_maps"/>
-
         <!-- Import bottom navigation -->
         <include layout="@layout/bottom_navigation"
             android:layout_width="match_parent"
