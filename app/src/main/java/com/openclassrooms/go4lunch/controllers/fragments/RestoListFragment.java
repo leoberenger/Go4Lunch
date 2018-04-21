@@ -50,7 +50,12 @@ public class RestoListFragment extends Fragment {
 
         this.configureRecyclerView();
         this.configureOnClickRecyclerView();
-        this.executeHttpRequestWithRetrofit();
+
+        //Retrieve current position from MainActivity
+        Bundle args = getArguments();
+        String currentPosition = args.getString("CURRENT_POSITION");
+
+        this.executeHttpRequestWithRetrofit(currentPosition);
 
         return view;
     }
@@ -89,8 +94,8 @@ public class RestoListFragment extends Fragment {
     // HTTP REQUEST (RxJava)
     // -----------------
 
-    private void executeHttpRequestWithRetrofit(){
-        this.mDisposable = GMPlacesStreams.streamFetchNearbyRestaurants("48.396396,-4.477549")
+    private void executeHttpRequestWithRetrofit(String location){
+        this.mDisposable = GMPlacesStreams.streamFetchNearbyRestaurants(location)
                 .subscribeWith(new DisposableObserver<PlacesAPI>(){
                     @Override
                     public void onNext(PlacesAPI places) {

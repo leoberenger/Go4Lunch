@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.openclassrooms.go4lunch.CurrentPosition;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.api.GMPlacesStreams;
 import com.openclassrooms.go4lunch.api.models.PlacesAPI;
@@ -48,14 +49,10 @@ public class MainActivity extends AppCompatActivity{
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigation;
 
     private GoogleMap mMap;
-    private String currentPosition;
+    private CurrentPosition mPosition;
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private CameraPosition mCameraPosition;
-
-    // The entry points to the Places API.
-    private GeoDataClient mGeoDataClient;
-    private PlaceDetectionClient mPlaceDetectionClient;
 
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -73,59 +70,34 @@ public class MainActivity extends AppCompatActivity{
     private static final String KEY_LOCATION = "location";
 
     private Disposable mDisposable;
-    private List<PlacesAPI.Result> places;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Prompt the user for permission.
+        getLocationPermission();
+
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mGeoDataClient = Places.getGeoDataClient(getApplicationContext());
-        mPlaceDetectionClient = Places.getPlaceDetectionClient(getApplicationContext());
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFragment = null;
-                switch (item.getItemId()){
-                    case R.id.map:
-                        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
-                        mapFragment.getMapAsync(new OnMapReadyCallback() {
-                            @Override
-                            public void onMapReady(GoogleMap googleMap) {
-                                mMap = googleMap;
-                                // Prompt the user for permission.
-                                getLocationPermission();
+        mPosition = new CurrentPosition("","");
 
-                                // Turn on the My Location layer and the related control on the map.
-                                updateLocationUI();
+        //Show First Default Fragment
+        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
+        getMap(mapFragment);
+        replaceCurrentWithNewFragment(mapFragment);
 
-                                // Get the current location of the device and set the position of the map.
-                                getDeviceLocation();
-
-                                //Position Location Button in the bottom right corner
-                                positionLocationButton();
-                            }
-                        });
-                        selectedFragment = mapFragment;
-                        break;
-                    case R.id.restos_list:
-                        selectedFragment = new RestoListFragment();
-                        break;
-                }
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.activity_main_relative_layout, selectedFragment);
-                transaction.commit();
-                return true;
-            }
-        });
+        //Configure Bottom Navigation
+        configureBottomNavigation(bottomNavigation);
     }
 
     @Override
@@ -137,9 +109,65 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    private void configureBottomNavigation(BottomNavigationView btmNav){
+
+       btmNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+                switch (item.getItemId()){
+                    case R.id.map:
+                        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
+                        getMap(mapFragment);
+                        selectedFragment = mapFragment;
+                        break;
+                    case R.id.restos_list:
+                        RestoListFragment restoListFragment = new RestoListFragment();
+
+                        //Send current position to restoListFragment
+                        Bundle args = new Bundle();
+                        args.putString("CURRENT_POSITION", mPosition.toString());
+                        restoListFragment.setArguments(args);
+
+                        selectedFragment = restoListFragment;
+                        break;
+                }
+                replaceCurrentWithNewFragment(selectedFragment);
+                return true;
+            }
+        });
+    }
+
+    private void replaceCurrentWithNewFragment(Fragment fragment){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.activity_main_relative_layout, fragment);
+        transaction.commit();
+    }
+
     // -----------------
     // MAP FRAGMENT
     // -----------------
+
+    private void getMap(SupportMapFragment mapFragment){
+
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                mMap = googleMap;
+
+                // Turn on the My Location layer and the related control on the map.
+                updateLocationUI();
+
+                // Get the current location of the device and set the position of the map.
+                getDeviceLocation();
+
+                //Position Location Button in the bottom right corner
+                positionLocationButton();
+
+
+            }
+        });
+    }
 
     private void getDeviceLocation() {
         /*
@@ -159,10 +187,11 @@ public class MainActivity extends AppCompatActivity{
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
 
-                            //Send HTTP Request to retrieve nearby restaurants
-                            currentPosition = mLastKnownLocation.getLatitude()+", "+mLastKnownLocation.getLongitude();
-                            Log.e(TAG, "location = " + mLastKnownLocation.getLatitude()+", "+mLastKnownLocation.getLongitude());
-                            executeHttpRequestWithRetrofit(currentPosition);
+                            mPosition.setLatitude(""+ mLastKnownLocation.getLatitude());
+                            mPosition.setLongitude(""+ mLastKnownLocation.getLongitude());
+
+                            //Get Nearby Restaurants
+                            executeHttpRequestWithRetrofit(mPosition.toString());
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -212,7 +241,8 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public void onDestroy(){
         super.onDestroy();
-        this.disposeWhenDestroy();
+        if(this.mDisposable != null && !this.mDisposable.isDisposed())
+            this.mDisposable.dispose();
     }
 
     private void executeHttpRequestWithRetrofit(String position){
@@ -237,11 +267,6 @@ public class MainActivity extends AppCompatActivity{
                 });
     }
 
-    private void disposeWhenDestroy(){
-        if(this.mDisposable != null && !this.mDisposable.isDisposed())
-            this.mDisposable.dispose();
-    }
-
     private void updateUI(PlacesAPI results){
         mMap.clear();
         // This loop will go through all the results and add marker on each location.
@@ -259,10 +284,11 @@ public class MainActivity extends AppCompatActivity{
             markerOptions.position(latLng);
             // Adding Title to the Marker
             markerOptions.title(placeName + " : " + vicinity);
-            // Adding Marker to the Camera.
-            Marker m = mMap.addMarker(markerOptions);
             // Adding colour to the marker
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            // Adding Marker to the Camera.
+            Marker m = mMap.addMarker(markerOptions);
+
             // move map camera
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
