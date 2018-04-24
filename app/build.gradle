@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 
+
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -76,3 +77,4 @@ dependencies {
     //FACEBOOK
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
 }
+apply plugin: 'com.google.gms.google-services'
