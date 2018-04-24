@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity{
 
     private GoogleMap mMap;
     private CurrentPosition mPosition;
+    private PlacesAPI mPlaces;
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private CameraPosition mCameraPosition;
@@ -163,8 +164,6 @@ public class MainActivity extends AppCompatActivity{
 
                 //Position Location Button in the bottom right corner
                 positionLocationButton();
-
-
             }
         });
     }
@@ -252,6 +251,7 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onNext(PlacesAPI places) {
                         Log.e("MapsActivity", "On Next");
+                        mPlaces = places;
                         updateUI(places);
                     }
 
