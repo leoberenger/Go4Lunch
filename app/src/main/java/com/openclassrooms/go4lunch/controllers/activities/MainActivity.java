@@ -17,9 +17,6 @@ import android.widget.RelativeLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.PlaceDetectionClient;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,8 +33,6 @@ import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.api.GMPlacesStreams;
 import com.openclassrooms.go4lunch.api.models.PlacesAPI;
 import com.openclassrooms.go4lunch.controllers.fragments.RestoListFragment;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -95,7 +90,7 @@ public class MainActivity extends AppCompatActivity{
         //Show First Default Fragment
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getMap(mapFragment);
-        replaceCurrentWithNewFragment(mapFragment);
+        replaceCurrentFragment(mapFragment);
 
         //Configure Bottom Navigation
         configureBottomNavigation(bottomNavigation);
@@ -109,6 +104,11 @@ public class MainActivity extends AppCompatActivity{
             super.onSaveInstanceState(outState);
         }
     }
+
+
+    // -----------------
+    // CONFIGURATIOn
+    // -----------------
 
     private void configureBottomNavigation(BottomNavigationView btmNav){
 
@@ -133,13 +133,13 @@ public class MainActivity extends AppCompatActivity{
                         selectedFragment = restoListFragment;
                         break;
                 }
-                replaceCurrentWithNewFragment(selectedFragment);
+                replaceCurrentFragment(selectedFragment);
                 return true;
             }
         });
     }
 
-    private void replaceCurrentWithNewFragment(Fragment fragment){
+    private void replaceCurrentFragment(Fragment fragment){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activity_main_relative_layout, fragment);
         transaction.commit();
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity{
                 mMap = googleMap;
 
                 // Turn on the My Location layer and the related control on the map.
-                updateLocationUI();
+                showCurrentLocationAndEnableControls();
 
                 // Get the current location of the device and set the position of the map.
                 getDeviceLocation();
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity{
                             mPosition.setLongitude(""+ mLastKnownLocation.getLongitude());
 
                             //Get Nearby Restaurants
-                            executeHttpRequestWithRetrofit(mPosition.toString());
+                            executeHttpRequestToFindNearbyRestaurants(mPosition.toString());
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    private void updateLocationUI() {
+    private void showCurrentLocationAndEnableControls() {
         if (mMap == null) {
             return;
         }
@@ -225,49 +225,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    private void positionLocationButton(){
-        View locationButton = ((View) this.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
-        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        rlp.setMargins(0, 0, 30, 100);
-    }
-
-    // --------------------------
-    // NEARBY SEARCH HTTP REQUEST
-    // --------------------------
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        if(this.mDisposable != null && !this.mDisposable.isDisposed())
-            this.mDisposable.dispose();
-    }
-
-    private void executeHttpRequestWithRetrofit(String position){
-        Log.e("MainActivity Request", "position = " + position);
-        this.mDisposable = GMPlacesStreams.streamFetchNearbyRestaurants(position)
-                .subscribeWith(new DisposableObserver<PlacesAPI>(){
-                    @Override
-                    public void onNext(PlacesAPI places) {
-                        Log.e("MapsActivity", "On Next");
-                        mPlaces = places;
-                        updateUI(places);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e("MapsActivity", "On Error"+Log.getStackTraceString(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.e("MapsActivity", "On Complete");
-                    }
-                });
-    }
-
-    private void updateUI(PlacesAPI results){
+    private void showRestaurantsOnMapWithMarkers(PlacesAPI results){
         mMap.clear();
         // This loop will go through all the results and add marker on each location.
         for (int i = 0; i < results.getResults().size(); i++) {
@@ -293,6 +251,48 @@ public class MainActivity extends AppCompatActivity{
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
         }
+    }
+
+    private void positionLocationButton(){
+        View locationButton = ((View) this.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        rlp.setMargins(0, 0, 30, 100);
+    }
+
+    // --------------------------
+    // NEARBY SEARCH HTTP REQUEST
+    // --------------------------
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if(this.mDisposable != null && !this.mDisposable.isDisposed())
+            this.mDisposable.dispose();
+    }
+
+    private void executeHttpRequestToFindNearbyRestaurants(String position){
+        Log.e("MainActivity Request", "position = " + position);
+        this.mDisposable = GMPlacesStreams.streamFetchNearbyRestaurants(position)
+                .subscribeWith(new DisposableObserver<PlacesAPI>(){
+                    @Override
+                    public void onNext(PlacesAPI places) {
+                        Log.e("MapsActivity", "On Next");
+                        mPlaces = places;
+                        showRestaurantsOnMapWithMarkers(places);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("MapsActivity", "On Error"+Log.getStackTraceString(e));
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e("MapsActivity", "On Complete");
+                    }
+                });
     }
 
     // -----------------
@@ -327,7 +327,7 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         }
-        updateLocationUI();
+        showCurrentLocationAndEnableControls();
     }
 
 }
