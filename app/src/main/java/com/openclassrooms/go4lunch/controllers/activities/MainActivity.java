@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -34,19 +33,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.openclassrooms.go4lunch.models.CurrentPosition;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
+import com.openclassrooms.go4lunch.managers.PlacesMgr;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 import com.openclassrooms.go4lunch.controllers.fragments.RestoListFragment;
 
-import java.util.Arrays;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
@@ -54,18 +49,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigation;
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     //------------------------
     // VARIABLES FOR MAP FRAGMENT
     //------------------------
     private GoogleMap mMap;
-    private CurrentPosition mPosition;
-    private PlacesAPI mPlaces;
-
-    private static final String TAG = MainActivity.class.getSimpleName();
     private CameraPosition mCameraPosition;
 
-    // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location mLastKnownLocation;
 
     // A default location (Sydney, Australia) and default zoom to use when location permission is not granted.
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
@@ -73,19 +66,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
 
-    private Location mLastKnownLocation;
-
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-
-    private Disposable mDisposable;
-
 
     // FOR NAVIGATION DRAWER
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+
+    //FOR HTTP REQUEST
+    private Disposable mDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,18 +97,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.configureToolBar();
         this.configureDrawerLayout();
         this.configureNavigationView();
+        this.configureBottomNavigation(bottomNavigation);
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        mPosition = new CurrentPosition("","");
-
-        //Show First Default Fragment
+        //Show Map Fragment by default
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getMap(mapFragment);
         replaceCurrentFragment(mapFragment);
-
-        //Configure Bottom Navigation
-        configureBottomNavigation(bottomNavigation);
     }
 
     @Override
@@ -147,13 +134,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id){
             case R.id.activity_main_drawer_restaurant :
-                Toast.makeText(this, "Your Lunch Page", Toast.LENGTH_LONG);
+                Toast.makeText(this, "Your Lunch Page", Toast.LENGTH_LONG).show();
                 break;
             case R.id.activity_main_drawer_settings:
-                Toast.makeText(this, "Settings Page", Toast.LENGTH_LONG);
+                Toast.makeText(this, "Settings Page", Toast.LENGTH_LONG).show();
                 break;
             case R.id.activity_main_drawer_logout:
-                Toast.makeText(this, "Logout", Toast.LENGTH_LONG);
+                Toast.makeText(this, "Logout", Toast.LENGTH_LONG).show();
                 break;
             default:
                 break;
@@ -182,14 +169,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         selectedFragment = mapFragment;
                         break;
                     case R.id.restos_list:
-                        RestoListFragment restoListFragment = new RestoListFragment();
-
-                        //Send current position to restoListFragment
-                        Bundle args = new Bundle();
-                        args.putString("CURRENT_POSITION", mPosition.toString());
-                        restoListFragment.setArguments(args);
-
-                        selectedFragment = restoListFragment;
+                        selectedFragment = new RestoListFragment();
                         break;
                 }
                 replaceCurrentFragment(selectedFragment);
@@ -263,15 +243,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
 
-                            mPosition.setLatitude(""+ mLastKnownLocation.getLatitude());
-                            mPosition.setLongitude(""+ mLastKnownLocation.getLongitude());
-
                             //Get Nearby Restaurants
-                            executeHttpRequestToFindNearbyRestaurants(mPosition.toString(), new DisposableObserver<PlacesAPI>(){
+                            String currentPosition = mLastKnownLocation.getLatitude() + ", " + + mLastKnownLocation.getLongitude();
+                            executeHttpRequestToFindNearbyRestaurants(currentPosition, new DisposableObserver<PlacesAPI>(){
                                 @Override
                                 public void onNext(PlacesAPI places) {
                                     Log.e("MapsActivity", "On Next");
-                                    mPlaces = places;
+                                    PlacesMgr placesMgr = PlacesMgr.getInstance();
+                                    placesMgr.setPlaces(places);
                                     showRestaurantsOnMapWithMarkers(places);
                                 }
                                 @Override
