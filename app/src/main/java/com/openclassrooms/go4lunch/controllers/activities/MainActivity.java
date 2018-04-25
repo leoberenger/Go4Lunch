@@ -51,6 +51,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    // FOR NAVIGATION DRAWER
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+
+    //FOR HTTP REQUEST
+    private Disposable mDisposable;
+
     //------------------------
     // VARIABLES FOR MAP FRAGMENT
     //------------------------
@@ -70,13 +78,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
-    // FOR NAVIGATION DRAWER
-    private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-
-    //FOR HTTP REQUEST
-    private Disposable mDisposable;
+    //------------------------
+    // OVERRIDE METHODS
+    //------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,9 +160,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // CONFIGURATION
     // -----------------
 
+    private void configureToolBar(){
+        this.toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    private void configureDrawerLayout(){
+        this.drawerLayout = (DrawerLayout) findViewById(R.id.activity_main_drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    private void configureNavigationView(){
+        this.navigationView = (NavigationView) findViewById(R.id.activity_main_nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
     private void configureBottomNavigation(BottomNavigationView btmNav){
 
-       btmNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        btmNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
@@ -182,23 +203,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activity_main_frame_layout, fragment);
         transaction.commit();
-    }
-
-    private void configureToolBar(){
-        this.toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
-        setSupportActionBar(toolbar);
-    }
-
-    private void configureDrawerLayout(){
-        this.drawerLayout = (DrawerLayout) findViewById(R.id.activity_main_drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-    }
-
-    private void configureNavigationView(){
-        this.navigationView = (NavigationView) findViewById(R.id.activity_main_nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
 
@@ -331,6 +335,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(0, 0, 30, 100);
     }
+    
 
     // --------------------------
     // NEARBY SEARCH HTTP REQUEST
