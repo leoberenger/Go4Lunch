@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.openclassrooms.go4lunch.R;
-import com.openclassrooms.go4lunch.api.models.PlacesAPI;
+import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

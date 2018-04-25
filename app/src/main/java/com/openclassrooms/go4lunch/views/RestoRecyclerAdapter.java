@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.RequestManager;
 import com.openclassrooms.go4lunch.R;
-import com.openclassrooms.go4lunch.api.models.PlacesAPI;
+import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.openclassrooms.go4lunch.api.models;
+package com.openclassrooms.go4lunch.models.googlemaps;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

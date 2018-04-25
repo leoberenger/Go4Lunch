@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,14 +31,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.openclassrooms.go4lunch.CurrentPosition;
+import com.openclassrooms.go4lunch.models.CurrentPosition;
 import com.openclassrooms.go4lunch.R;
-import com.openclassrooms.go4lunch.api.GMPlacesStreams;
-import com.openclassrooms.go4lunch.api.models.PlacesAPI;
+import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
+import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 import com.openclassrooms.go4lunch.controllers.fragments.RestoListFragment;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
@@ -45,6 +49,9 @@ public class MainActivity extends AppCompatActivity{
 
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigation;
 
+    //------------------------
+    // VARIABLES FOR MAP FRAGMENT
+    //------------------------
     private GoogleMap mMap;
     private CurrentPosition mPosition;
     private PlacesAPI mPlaces;
@@ -332,16 +339,5 @@ public class MainActivity extends AppCompatActivity{
         showCurrentLocationAndEnableControls();
     }
 
-    // --------------------
-    // ERROR HANDLER
-    // --------------------
 
-    protected OnFailureListener onFailureListener(){
-        return new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
-            }
-        };
-    }
 }

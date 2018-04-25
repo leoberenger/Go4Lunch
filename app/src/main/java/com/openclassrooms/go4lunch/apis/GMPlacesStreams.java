@@ -1,7 +1,7 @@
-package com.openclassrooms.go4lunch.api;
+package com.openclassrooms.go4lunch.apis;
 
 
-import com.openclassrooms.go4lunch.api.models.PlacesAPI;
+import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import java.util.concurrent.TimeUnit;
 

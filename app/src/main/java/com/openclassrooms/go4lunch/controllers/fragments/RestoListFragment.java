@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.openclassrooms.go4lunch.R;
-import com.openclassrooms.go4lunch.api.GMPlacesStreams;
-import com.openclassrooms.go4lunch.api.models.PlacesAPI;
+import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
+import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 import com.openclassrooms.go4lunch.controllers.activities.DetailActivity;
 import com.openclassrooms.go4lunch.utils.ItemClickSupport;
 import com.openclassrooms.go4lunch.views.RestoRecyclerAdapter;

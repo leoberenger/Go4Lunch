@@ -1,4 +1,4 @@
-package com.openclassrooms.go4lunch.api;
+package com.openclassrooms.go4lunch.apis;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;

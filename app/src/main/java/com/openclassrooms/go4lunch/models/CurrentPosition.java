@@ -1,4 +1,4 @@
-package com.openclassrooms.go4lunch;
+package com.openclassrooms.go4lunch.models;
 
 public class CurrentPosition {
     String latitude;
