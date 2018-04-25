@@ -2,6 +2,7 @@ package com.openclassrooms.go4lunch.controllers.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,6 +31,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.activity_detail_website_btn) Button websiteBtn;
     @BindView(R.id.activity_detail_header_image) ImageView headerImg;
     @BindView(R.id.activity_detail_toolbar) Toolbar toolbar;
+    @BindView(R.id.activity_detail_select_resto_fab) FloatingActionButton selectRestoFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,13 @@ public class DetailActivity extends AppCompatActivity {
         websiteBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(getApplication(), "Website Button clicked", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        selectRestoFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplication(), "Restaurant Selected!", Toast.LENGTH_LONG).show();
             }
         });
 
