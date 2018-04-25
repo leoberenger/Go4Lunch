@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void replaceCurrentFragment(Fragment fragment){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_main_relative_layout, fragment);
+        transaction.replace(R.id.activity_main_frame_layout, fragment);
         transaction.commit();
     }
 
