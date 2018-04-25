@@ -19,5 +19,12 @@
     <string name="resto_list">List View</string>
     <string name="workmates_list">Workmates</string>
 
+    <!-- Navigation Drawer Menu -->
+    <string name="restaurant">Your Lunch</string>
+    <string name="settings">Settings</string>
+    <string name="logout">Logout</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 
 </resources>

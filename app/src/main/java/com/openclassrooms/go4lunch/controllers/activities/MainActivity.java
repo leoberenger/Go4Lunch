@@ -4,12 +4,17 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,7 +50,7 @@ import butterknife.OnClick;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigation;
 
@@ -76,6 +81,12 @@ public class MainActivity extends AppCompatActivity{
 
     private Disposable mDisposable;
 
+
+    // FOR NAVIGATION DRAWER
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +102,10 @@ public class MainActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        this.configureToolBar();
+        this.configureDrawerLayout();
+        this.configureNavigationView();
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -114,9 +129,41 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        // 5 - Handle back click to close menu
+        if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+        // 4 - Handle Navigation Item Click
+        int id = item.getItemId();
+
+        switch (id){
+            case R.id.activity_main_drawer_restaurant :
+                break;
+            case R.id.activity_main_drawer_settings:
+                break;
+            case R.id.activity_main_drawer_logout:
+                break;
+            default:
+                break;
+        }
+
+        this.drawerLayout.closeDrawer(GravityCompat.START);
+
+        return true;
+    }
+
 
     // -----------------
-    // CONFIGURATIOn
+    // CONFIGURATION
     // -----------------
 
     private void configureBottomNavigation(BottomNavigationView btmNav){
@@ -153,6 +200,25 @@ public class MainActivity extends AppCompatActivity{
         transaction.replace(R.id.activity_main_relative_layout, fragment);
         transaction.commit();
     }
+
+    private void configureToolBar(){
+        this.toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    private void configureDrawerLayout(){
+        this.drawerLayout = (DrawerLayout) findViewById(R.id.activity_main_drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    private void configureNavigationView(){
+        this.navigationView = (NavigationView) findViewById(R.id.activity_main_nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+
 
     // -----------------
     // MAP FRAGMENT
