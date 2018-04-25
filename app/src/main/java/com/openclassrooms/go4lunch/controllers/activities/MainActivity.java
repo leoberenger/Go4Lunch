@@ -147,10 +147,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id){
             case R.id.activity_main_drawer_restaurant :
+                Toast.makeText(this, "Your Lunch Page", Toast.LENGTH_LONG);
                 break;
             case R.id.activity_main_drawer_settings:
+                Toast.makeText(this, "Settings Page", Toast.LENGTH_LONG);
                 break;
             case R.id.activity_main_drawer_logout:
+                Toast.makeText(this, "Logout", Toast.LENGTH_LONG);
                 break;
             default:
                 break;
