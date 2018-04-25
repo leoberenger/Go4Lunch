@@ -20,18 +20,17 @@
             app:contentScrim="@color/colorPrimary">
 
             <ImageView
-                android:id="@+id/header_image"
+                android:id="@+id/activity_detail_header_image"
                 android:layout_width="match_parent"
                 android:layout_height="270dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/blurred_restaurant"
                 app:layout_collapseMode="parallax"/>
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@+id/activity_detail_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:popupTheme="@style/ToolBarStyle"
                 app:layout_collapseMode="pin" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -55,7 +54,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="100dp"
                 android:background="@color/colorPrimary"
                 android:orientation="vertical">
 
@@ -63,28 +62,50 @@
                     android:id="@+id/activity_detail_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
                     android:textSize="20sp"/>
 
                 <TextView
                     android:id="@+id/activity_detail_type_and_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
                     android:textSize="14sp"/>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/colorAccent">
+                android:layout_height="100dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textview2"
-                    android:textSize="20sp"
-                    android:text="TEST TEXT2"
-                    />
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:text="@string/call"
+                    android:id="@+id/activity_detail_phone_btn"
+                    android:drawableTop="@drawable/ic_phone_black_24dp"/>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:text="@string/like"
+                    android:id="@+id/activity_detail_like_btn"
+                    android:drawableTop="@drawable/ic_star_rate_black_18dp"/>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:text="@string/website"
+                    android:id="@+id/activity_detail_website_btn"
+                    android:drawableTop="@drawable/ic_public_black_24dp"/>
 
             </LinearLayout>
 
