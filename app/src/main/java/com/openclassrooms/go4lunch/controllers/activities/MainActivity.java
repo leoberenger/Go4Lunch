@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(0, 0, 30, 100);
     }
-    
+
 
     // --------------------------
     // NEARBY SEARCH HTTP REQUEST
