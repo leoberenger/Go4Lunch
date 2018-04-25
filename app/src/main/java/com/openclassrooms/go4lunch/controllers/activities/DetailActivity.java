@@ -66,7 +66,7 @@ public class DetailActivity extends AppCompatActivity {
         selectRestoFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplication(), "Restaurant Selected!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(), "Resto selected!", Toast.LENGTH_LONG).show();
             }
         });
 
