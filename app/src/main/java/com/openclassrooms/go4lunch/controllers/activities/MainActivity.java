@@ -222,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     // -----------------
     // MAP FRAGMENT
     // -----------------
@@ -268,7 +267,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             mPosition.setLongitude(""+ mLastKnownLocation.getLongitude());
 
                             //Get Nearby Restaurants
-                            executeHttpRequestToFindNearbyRestaurants(mPosition.toString());
+                            executeHttpRequestToFindNearbyRestaurants(mPosition.toString(), new DisposableObserver<PlacesAPI>(){
+                                @Override
+                                public void onNext(PlacesAPI places) {
+                                    Log.e("MapsActivity", "On Next");
+                                    mPlaces = places;
+                                    showRestaurantsOnMapWithMarkers(places);
+                                }
+                                @Override
+                                public void onError(Throwable e) {
+                                    Log.e("MapsActivity", "On Error"+Log.getStackTraceString(e));
+                                }
+                                @Override
+                                public void onComplete() {
+                                    Log.e("MapsActivity", "On Complete");
+                                }
+                            });
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -350,27 +364,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.mDisposable.dispose();
     }
 
-    private void executeHttpRequestToFindNearbyRestaurants(String position){
+    private void executeHttpRequestToFindNearbyRestaurants(String position, DisposableObserver<PlacesAPI> observer){
         Log.e("MainActivity Request", "position = " + position);
         this.mDisposable = GMPlacesStreams.streamFetchNearbyRestaurants(position)
-                .subscribeWith(new DisposableObserver<PlacesAPI>(){
-                    @Override
-                    public void onNext(PlacesAPI places) {
-                        Log.e("MapsActivity", "On Next");
-                        mPlaces = places;
-                        showRestaurantsOnMapWithMarkers(places);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e("MapsActivity", "On Error"+Log.getStackTraceString(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.e("MapsActivity", "On Complete");
-                    }
-                });
+                .subscribeWith(observer);
     }
 
     // -----------------
@@ -407,6 +404,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         showCurrentLocationAndEnableControls();
     }
-
 
 }
