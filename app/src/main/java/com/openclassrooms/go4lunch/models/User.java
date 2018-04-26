@@ -5,7 +5,8 @@ import android.support.annotation.Nullable;
 public class User {
 
     private String userId;
-    private String userName;
+    private String username;
+    @Nullable private String selectedRestoId;
     @Nullable private String urlPicture;
 
     //----------------------
@@ -14,26 +15,24 @@ public class User {
 
     public User() { }
 
-    public User(String userId, String userName, String urlPicture) {
+    public User(String userId, String username, @Nullable String urlPicture, @Nullable String selectedRestoId) {
         this.userId = userId;
-        this.userName = userName;
+        this.username = username;
+        this.selectedRestoId = selectedRestoId;
         this.urlPicture = urlPicture;
     }
+
+
+    //----------------------
+    // GETTERS
+    //----------------------
 
     public String getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getUsername() {
+        return username;
     }
 
     @Nullable
@@ -41,7 +40,29 @@ public class User {
         return urlPicture;
     }
 
+    @Nullable
+    public String getSelectedRestoId() {
+        return selectedRestoId;
+    }
+
+
+    //----------------------
+    // SETTERS
+    //----------------------
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public void setUrlPicture(@Nullable String urlPicture) {
         this.urlPicture = urlPicture;
+    }
+
+    public void setSelectedRestoId(@Nullable String selectedRestoId) {
+        this.selectedRestoId = selectedRestoId;
     }
 }

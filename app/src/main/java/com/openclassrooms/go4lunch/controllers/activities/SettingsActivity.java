@@ -6,7 +6,6 @@ import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -80,7 +79,6 @@ public class SettingsActivity extends BaseActivity {
         }
     }
 
-    // 3 - Update User Username
     private void updateUsernameInFirebase(){
 
         this.progressBar.setVisibility(View.VISIBLE);
@@ -120,7 +118,7 @@ public class SettingsActivity extends BaseActivity {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     User currentUser = documentSnapshot.toObject(User.class);
-                    String username = TextUtils.isEmpty(currentUser.getUserName()) ? getString(R.string.info_no_username_found) : currentUser.getUserName();
+                    String username = TextUtils.isEmpty(currentUser.getUsername()) ? getString(R.string.info_no_username_found) : currentUser.getUsername();
                     //checkBoxIsMentor.setChecked(currentUser.getIsMentor());
                     textInputEditTextUsername.setText(username);
                 }

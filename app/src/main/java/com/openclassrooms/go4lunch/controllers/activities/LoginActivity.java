@@ -73,7 +73,6 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-
     // --------------------
     // NAVIGATION
     // --------------------
@@ -131,7 +130,6 @@ public class LoginActivity extends BaseActivity {
                 }
             }else{ // SUCCESS
                 showSnackBar(this.coordinatorLayout, getString(R.string.connection_succeed));
-                Log.e("LoginActivity", "Connexion réussie");
                 this.createUserInFirestore();
             }
         }
