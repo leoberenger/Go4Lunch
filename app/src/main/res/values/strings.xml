@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Go4Lunch</string>
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDo9fmtrQ9rViuvzU0dEVklA5L2h8mEsq4</string>
@@ -60,5 +60,13 @@
     <string name="popup_message_choice_yes">Oui !</string>
     <string name="popup_message_choice_no">Non</string>
     <string name="check_box_is_mentor">Etes-vous un mentor ?</string>
+
+    <!-- FACEBOOK PURPOSE -->
+    <string name="facebook_application_id" translatable="false">2071780099763574</string>
+    <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb2071780099763574</string>
+
+    <!-- TWITTER PURPOSE -->
+    <string name="twitter_consumer_key" translatable="false">5hOInEl4se2tBwGOCvSg8ydXo</string>
+    <string name="twitter_consumer_secret" translatable="false">UWJ9zwJPG4mtyfXakWEZhae7T8Gkg9FDl5eOxLhu5igvPnD3P7</string>
 
 </resources>

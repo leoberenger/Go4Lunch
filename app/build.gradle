@@ -79,5 +79,8 @@ dependencies {
 
     //FACEBOOK
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+
+    //TWITTER
+    implementation 'com.twitter.sdk.android:twitter:3.1.1'
 }
 apply plugin: 'com.google.gms.google-services'
