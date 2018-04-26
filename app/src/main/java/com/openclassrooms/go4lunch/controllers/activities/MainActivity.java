@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -16,6 +17,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,9 +39,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
+import com.openclassrooms.go4lunch.apis.UserHelper;
 import com.openclassrooms.go4lunch.managers.PlacesMgr;
+import com.openclassrooms.go4lunch.models.User;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 import com.openclassrooms.go4lunch.controllers.fragments.RestoListFragment;
 
@@ -61,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //FOR HTTP REQUEST
     private Disposable mDisposable;
+
+    private String placeId;
 
     //------------------------
     // VARIABLES FOR MAP FRAGMENT
@@ -141,11 +150,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id){
             case R.id.activity_main_drawer_restaurant :
+                UserHelper.getUser(this.getCurrentUser().getUid())
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        User currentUser = documentSnapshot.toObject(User.class);
+                        placeId = currentUser.getSelectedRestoId();
+                        Log.e("MainActivity onSuccess", "placeId = " + placeId);
+                        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                        intent.putExtra("PLACE_ID", placeId);
+                        startActivity(intent);
+                    }
+                });
                 Toast.makeText(this, "Your Lunch Page", Toast.LENGTH_LONG).show();
                 break;
             case R.id.activity_main_drawer_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.activity_main_drawer_logout:
                 logoutUser();
@@ -403,5 +423,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
     }
+
+
+    @Nullable
+    private FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
 
 }

@@ -2,6 +2,8 @@ package com.openclassrooms.go4lunch.controllers.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,8 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
+import com.openclassrooms.go4lunch.apis.UserHelper;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import butterknife.BindView;
@@ -66,7 +72,11 @@ public class DetailActivity extends AppCompatActivity {
         selectRestoFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplication(), "Resto selected!", Toast.LENGTH_LONG).show();
+                if (getCurrentUser() != null){
+                    UserHelper.updateSelectedRestoId(placeId, getCurrentUser().getUid())
+                            .addOnFailureListener(onFailureListener());
+                }
+                Toast.makeText(getApplication(), "Resto selected : " + placeId, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -115,5 +125,17 @@ public class DetailActivity extends AppCompatActivity {
         String typeAndAddress = place.getResult().getTypes().get(0) + " restaurant - " + place.getResult().getFormattedAddress();
         mTextViewTypeAndAddress.setText(typeAndAddress);
         headerImg.setImageResource(R.drawable.blurred_restaurant);
+    }
+
+    @Nullable
+    private FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
+
+    protected OnFailureListener onFailureListener(){
+        return new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
+            }
+        };
     }
 }

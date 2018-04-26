@@ -119,7 +119,6 @@ public class SettingsActivity extends BaseActivity {
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     User currentUser = documentSnapshot.toObject(User.class);
                     String username = TextUtils.isEmpty(currentUser.getUsername()) ? getString(R.string.info_no_username_found) : currentUser.getUsername();
-                    //checkBoxIsMentor.setChecked(currentUser.getIsMentor());
                     textInputEditTextUsername.setText(username);
                 }
             });
