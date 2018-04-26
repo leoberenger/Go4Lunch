@@ -1,5 +1,7 @@
 package com.openclassrooms.go4lunch.apis;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -8,46 +10,36 @@ import com.openclassrooms.go4lunch.models.User;
 
 public class UserHelper {
 
-    private static final String COLLECTION_NAME = "users";
+        private static final String COLLECTION_NAME = "users";
 
-    // --- COLLECTION REFERENCE ---
+        // --- COLLECTION REFERENCE ---
 
-    public static CollectionReference getUsersCollection(){
-        return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
-    }
+        public static CollectionReference getUsersCollection(){
+            return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
+        }
 
-    // --- CREATE ---
+        // --- CREATE ---
 
-    public static Task<Void> createUser(String uid, String userFamilyName, String userFirstName, String restoChosenId, String urlPicture) {
-        User userToCreate = new User(uid, userFamilyName, userFirstName, restoChosenId, urlPicture);
-        return UserHelper.getUsersCollection().document(uid).set(userToCreate);
-    }
+        public static Task<Void> createUser(String uid, String username, String urlPicture) {
+            User userToCreate = new User(uid, username, urlPicture);
+            return UserHelper.getUsersCollection().document(uid).set(userToCreate);
+        }
 
-    // --- GET ---
+        // --- GET ---
 
-    public static Task<DocumentSnapshot> getUser(String uid){
-        return UserHelper.getUsersCollection().document(uid).get();
-    }
+        public static Task<DocumentSnapshot> getUser(String uid){
+            return UserHelper.getUsersCollection().document(uid).get();
+        }
 
-    // --- UPDATE ---
+        // --- UPDATE ---
 
-    public static Task<Void> updateUserFamilyName(String userFamilyName, String uid) {
-        return UserHelper.getUsersCollection().document(uid).update("userFamilyName", userFamilyName);
-    }
+        public static Task<Void> updateUsername(String username, String uid) {
+            return UserHelper.getUsersCollection().document(uid).update("username", username);
+        }
 
-    public static Task<Void> updateUserFirstName(String userFirstName, String uid) {
-        return UserHelper.getUsersCollection().document(uid).update("userFamilyName", userFirstName);
-    }
+        // --- DELETE ---
 
-    public static Task<Void> updateRestoChosenId(String restoChosenId, String uid) {
-        return UserHelper.getUsersCollection().document(uid).update("restoChosenId", restoChosenId);
-    }
-
-
-    // --- DELETE ---
-
-    public static Task<Void> deleteUser(String uid) {
-        return UserHelper.getUsersCollection().document(uid).delete();
-    }
-
+        public static Task<Void> deleteUser(String uid) {
+            return UserHelper.getUsersCollection().document(uid).delete();
+        }
 }

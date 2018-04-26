@@ -3,9 +3,7 @@ package com.openclassrooms.go4lunch.controllers.activities;
 import android.content.DialogInterface;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -33,10 +31,8 @@ public class SettingsActivity extends BaseActivity {
     @BindView(R.id.profile_activity_edit_text_username) TextInputEditText textInputEditTextUsername;
     @BindView(R.id.profile_activity_text_view_email) TextView textViewEmail;
     @BindView(R.id.profile_activity_progress_bar) ProgressBar progressBar;
-    @BindView(R.id.profile_activity_check_box_is_mentor) CheckBox checkBoxIsMentor; // 1 - Adding CheckBox Mentor View
 
     //FOR DATA
-    private static final int SIGN_OUT_TASK = 10;
     private static final int DELETE_USER_TASK = 20;
     private static final int UPDATE_USERNAME = 30;
 
@@ -53,13 +49,10 @@ public class SettingsActivity extends BaseActivity {
     // ACTIONS
     // --------------------
 
-    @OnClick(R.id.profile_activity_button_update)
+    @OnClick(R.id.settings_activity_button_update)
     public void onClickUpdateButton() { this.updateUsernameInFirebase(); }
 
-    @OnClick(R.id.profile_activity_button_sign_out)
-    public void onClickSignOutButton() { this.signOutUserFromFirebase(); }
-
-    @OnClick(R.id.profile_activity_button_delete)
+    @OnClick(R.id.settings_activity_button_delete)
     public void onClickDeleteButton() {
         new AlertDialog.Builder(this)
                 .setMessage(R.string.popup_message_confirmation_delete_account)
@@ -72,26 +65,15 @@ public class SettingsActivity extends BaseActivity {
                 .setNegativeButton(R.string.popup_message_choice_no, null)
                 .show();
     }
-/*
-    @OnClick(R.id.profile_activity_check_box_is_mentor)
-    public void onClickCheckBoxIsMentor() { this.updateUserIsMentor(); }
-*/
+
+
     // --------------------
     // REST REQUESTS
     // --------------------
 
-    private void signOutUserFromFirebase(){
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
-    }
-
     private void deleteUserFromFirebase(){
         if (this.getCurrentUser() != null) {
-
-            //4 - We also delete user from firestore storage
             UserHelper.deleteUser(this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener());
-
             AuthUI.getInstance()
                     .delete(this)
                     .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(DELETE_USER_TASK));
@@ -102,22 +84,15 @@ public class SettingsActivity extends BaseActivity {
     private void updateUsernameInFirebase(){
 
         this.progressBar.setVisibility(View.VISIBLE);
-        String userFamilyName = this.textInputEditTextUsername.getText().toString();
+        String userLastName = this.textInputEditTextUsername.getText().toString();
 
         if (this.getCurrentUser() != null){
-            if (!userFamilyName.isEmpty() &&  !userFamilyName.equals(getString(R.string.info_no_username_found))){
-                UserHelper.updateUserFamilyName(userFamilyName, this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener()).addOnSuccessListener(this.updateUIAfterRESTRequestsCompleted(UPDATE_USERNAME));
+            if (!userLastName.isEmpty() &&  !userLastName.equals(getString(R.string.info_no_username_found))){
+                UserHelper.updateUsername(userLastName, this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener()).addOnSuccessListener(this.updateUIAfterRESTRequestsCompleted(UPDATE_USERNAME));
             }
         }
     }
-/*
-    // 2 - Update User Mentor (is or not)
-    private void updateUserIsMentor(){
-        if (this.getCurrentUser() != null) {
-            UserHelper.updateIsMentor(this.getCurrentUser().getUid(), this.checkBoxIsMentor.isChecked()).addOnFailureListener(this.onFailureListener());
-        }
-    }
-*/
+
     // --------------------
     // UI
     // --------------------
@@ -145,7 +120,7 @@ public class SettingsActivity extends BaseActivity {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     User currentUser = documentSnapshot.toObject(User.class);
-                    String username = TextUtils.isEmpty(currentUser.getUserFamilyName()) ? getString(R.string.info_no_username_found) : currentUser.getUserFamilyName();
+                    String username = TextUtils.isEmpty(currentUser.getUserName()) ? getString(R.string.info_no_username_found) : currentUser.getUserName();
                     //checkBoxIsMentor.setChecked(currentUser.getIsMentor());
                     textInputEditTextUsername.setText(username);
                 }
@@ -160,9 +135,6 @@ public class SettingsActivity extends BaseActivity {
                 switch (origin){
                     case UPDATE_USERNAME:
                         progressBar.setVisibility(View.INVISIBLE);
-                        break;
-                    case SIGN_OUT_TASK:
-                        finish();
                         break;
                     case DELETE_USER_TASK:
                         finish();

@@ -4,13 +4,9 @@ import android.support.annotation.Nullable;
 
 public class User {
 
-    private String uid;
-    private String userFamilyName;
-    private String userFirstName;
-    private String restoChosenId;
-
-    @Nullable
-    private String urlPicture;
+    private String userId;
+    private String userName;
+    @Nullable private String urlPicture;
 
     //----------------------
     // CONSTRUCTORS
@@ -18,58 +14,31 @@ public class User {
 
     public User() { }
 
-    public User(String uid, String userFamilyName, String userFirstName, String restoChosenId, String urlPicture) {
-        this.uid = uid;
-        this.userFamilyName = userFamilyName;
-        this.userFirstName = userFirstName;
-        this.restoChosenId = restoChosenId;
+    public User(String userId, String userName, String urlPicture) {
+        this.userId = userId;
+        this.userName = userName;
         this.urlPicture = urlPicture;
     }
 
-    //----------------------
-    // GETTERS
-    //----------------------
-
-    public String getUid() {
-        return uid;
+    public String getUserId() {
+        return userId;
     }
 
-    public String getUserFamilyName() {
-        return userFamilyName;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getUserFirstName() {
-        return userFirstName;
+    public String getUserName() {
+        return userName;
     }
 
-    public String getRestoChosenId() {
-        return restoChosenId;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Nullable
     public String getUrlPicture() {
         return urlPicture;
-    }
-
-
-    //----------------------
-    // SETTERS
-    //----------------------
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public void setUserFamilyName(String userFamilyName) {
-        this.userFamilyName = userFamilyName;
-    }
-
-    public void setUserFirstName(String userFirstName) {
-        this.userFirstName = userFirstName;
-    }
-
-    public void setRestoChosenId(String restoChosenId) {
-        this.restoChosenId = restoChosenId;
     }
 
     public void setUrlPicture(@Nullable String urlPicture) {

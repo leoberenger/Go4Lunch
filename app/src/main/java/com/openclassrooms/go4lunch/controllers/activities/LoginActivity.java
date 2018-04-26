@@ -3,6 +3,7 @@ package com.openclassrooms.go4lunch.controllers.activities;
 import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.widget.Button;
 
 import com.firebase.ui.auth.AuthUI;
@@ -62,14 +63,13 @@ public class LoginActivity extends BaseActivity {
     private void createUserInFirestore(){
 
         if (this.getCurrentUser() != null){
-
-            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
-            String userFirstName = this.getCurrentUser().getDisplayName();
-            String userFamilyName = this.getCurrentUser().getDisplayName();
-            String restoChosenId = this.getCurrentUser().getDisplayName();
+            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ?
+                    this.getCurrentUser().getPhotoUrl().toString() :
+                    null;
+            String userName = this.getCurrentUser().getDisplayName();
             String uid = this.getCurrentUser().getUid();
 
-            UserHelper.createUser(uid, userFamilyName, userFirstName, restoChosenId, urlPicture).addOnFailureListener(this.onFailureListener());
+            UserHelper.createUser(uid, userName, urlPicture).addOnFailureListener(this.onFailureListener());
         }
     }
 
@@ -87,8 +87,8 @@ public class LoginActivity extends BaseActivity {
                                 Arrays.asList(
                                         new AuthUI.IdpConfig.EmailBuilder().build(),
                                         new AuthUI.IdpConfig.GoogleBuilder().build(),
-                                        new AuthUI.IdpConfig.FacebookBuilder().build(),
-                                        new AuthUI.IdpConfig.TwitterBuilder().build()
+                                        new AuthUI.IdpConfig.FacebookBuilder().build()
+                                        //, new AuthUI.IdpConfig.TwitterBuilder().build()
                                         ))
                         .setIsSmartLockEnabled(false, true)
                         .build(),
@@ -121,17 +121,18 @@ public class LoginActivity extends BaseActivity {
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
         if (requestCode == RC_SIGN_IN) {
-            if (resultCode == RESULT_OK) { // SUCCESS
-                //showSnackBar(this.coordinatorLayout, getString(R.string.connection_succeed));
-                startMainActivity();
-            } else { // ERRORS
+            if (resultCode != RESULT_OK) { // ERRORS
                 if (response == null) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_authentication_canceled));
-                } else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                }else if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_no_internet));
-                } else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                }else if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_unknown_error));
                 }
+            }else{ // SUCCESS
+                showSnackBar(this.coordinatorLayout, getString(R.string.connection_succeed));
+                Log.e("LoginActivity", "Connexion réussie");
+                this.createUserInFirestore();
             }
         }
     }
