@@ -20,8 +20,8 @@ import butterknife.OnClick;
 public class LoginActivity extends BaseActivity {
 
     //FOR DESIGN
-    @BindView(R.id.main_activity_coordinator_layout) CoordinatorLayout coordinatorLayout;
-    @BindView(R.id.main_activity_button_login) Button buttonLogin;
+    @BindView(R.id.login_activity_coordinator_layout) CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.login_activity_login_btn) Button buttonLogin;
 
     //FOR DATA
     private static final int RC_SIGN_IN = 123;
@@ -46,21 +46,12 @@ public class LoginActivity extends BaseActivity {
     // ACTIONS
     // --------------------
 
-    @OnClick(R.id.main_activity_button_login)
+    @OnClick(R.id.login_activity_login_btn)
     public void onClickLoginButton() {
-        if (this.isCurrentUserLogged()){
-            this.startSettingsActivity();
-        } else {
-            this.startSignInActivity();
-        }
-    }
-
-    @OnClick(R.id.main_activity_button_chat)
-    public void onClickGoToMainButton() {
         if (this.isCurrentUserLogged()){
             this.startMainActivity();
         } else {
-            this.showSnackBar(this.coordinatorLayout, getString(R.string.error_not_connected));
+            this.startSignInActivity();
         }
     }
 
@@ -83,8 +74,6 @@ public class LoginActivity extends BaseActivity {
     }
 
 
-
-
     // --------------------
     // NAVIGATION
     // --------------------
@@ -104,11 +93,6 @@ public class LoginActivity extends BaseActivity {
                         .setIsSmartLockEnabled(false, true)
                         .build(),
                 RC_SIGN_IN);
-    }
-
-    private void startSettingsActivity(){
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
     }
 
     private void startMainActivity(){
@@ -138,7 +122,8 @@ public class LoginActivity extends BaseActivity {
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
-                showSnackBar(this.coordinatorLayout, getString(R.string.connection_succeed));
+                //showSnackBar(this.coordinatorLayout, getString(R.string.connection_succeed));
+                startMainActivity();
             } else { // ERRORS
                 if (response == null) {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_authentication_canceled));

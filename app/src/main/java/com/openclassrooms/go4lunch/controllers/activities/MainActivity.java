@@ -1,5 +1,6 @@
 package com.openclassrooms.go4lunch.controllers.activities;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,6 +35,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
@@ -141,10 +144,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(this, "Your Lunch Page", Toast.LENGTH_LONG).show();
                 break;
             case R.id.activity_main_drawer_settings:
-                Toast.makeText(this, "Settings Page", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.activity_main_drawer_logout:
-                Toast.makeText(this, "Logout", Toast.LENGTH_LONG).show();
+                logoutUser();
                 break;
             default:
                 break;
@@ -387,6 +391,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         showCurrentLocationAndEnableControls();
+    }
+
+    private void logoutUser(){
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        finish();
+                    }
+                });
     }
 
 }

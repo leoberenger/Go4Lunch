@@ -2,7 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_activity_coordinator_layout"
+    android:id="@+id/login_activity_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".controllers.activities.LoginActivity">
@@ -48,26 +48,13 @@
 
             <!-- BUTTON LOGIN -->
             <Button
-                android:id="@+id/main_activity_button_login"
+                android:id="@+id/login_activity_login_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/login"
                 android:textColor="#fff"
                 android:textSize="@dimen/default_text_size"
                 android:background="@color/colorPrimary"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_margin="@dimen/default_large_margin"
-                android:padding="@dimen/default_large_margin"/>
-
-            <!-- BUTTON CHAT -->
-            <Button
-                android:id="@+id/main_activity_button_chat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Chat with mentor"
-                android:textColor="#fff"
-                android:textSize="@dimen/default_text_size"
-                android:background="@color/colorAccent"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_margin="@dimen/default_large_margin"
                 android:padding="@dimen/default_large_margin"/>
