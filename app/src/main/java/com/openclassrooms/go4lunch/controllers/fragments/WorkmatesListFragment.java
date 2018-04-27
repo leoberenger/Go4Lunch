@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.openclassrooms.go4lunch.R;
+import com.openclassrooms.go4lunch.controllers.activities.DetailActivity;
 import com.openclassrooms.go4lunch.managers.PlacesMgr;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
-import com.openclassrooms.go4lunch.controllers.activities.DetailActivity;
 import com.openclassrooms.go4lunch.utils.ItemClickSupport;
 import com.openclassrooms.go4lunch.views.RestoRecyclerAdapter;
 
@@ -27,16 +27,15 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RestoListFragment extends Fragment {
+public class WorkmatesListFragment extends Fragment {
 
     // FOR DESIGN
-    @BindView(R.id.recycler_view)
-    protected RecyclerView mRecyclerView;
+    @BindView(R.id.recycler_view) protected RecyclerView mRecyclerView;
 
     private RestoRecyclerAdapter adapter;
     private List<PlacesAPI.Result> places;
 
-    public RestoListFragment() { }
+    public WorkmatesListFragment() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

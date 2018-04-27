@@ -23,9 +23,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
 import com.openclassrooms.go4lunch.apis.UserHelper;
+import com.openclassrooms.go4lunch.controllers.fragments.RestoListFragment;
 import com.openclassrooms.go4lunch.managers.PlacesMgr;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 import com.openclassrooms.go4lunch.views.RestoRecyclerAdapter;
+import com.openclassrooms.go4lunch.views.WorkmatesRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,10 +49,11 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.activity_detail_toolbar) Toolbar toolbar;
     @BindView(R.id.activity_detail_select_resto_fab) FloatingActionButton selectRestoFab;
 
-
     //RECYCLER VIEW
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
     private RestoRecyclerAdapter adapter;
+    private List<PlacesAPI.Result> places;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

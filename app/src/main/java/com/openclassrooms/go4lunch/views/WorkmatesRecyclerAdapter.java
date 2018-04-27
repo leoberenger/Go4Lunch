@@ -16,14 +16,14 @@ import java.util.List;
  * Created by berenger on 06/03/2018.
  */
 
-public class RestoRecyclerAdapter extends RecyclerView.Adapter<RestoViewHolder>{
+public class WorkmatesRecyclerAdapter extends RecyclerView.Adapter<RestoViewHolder>{
 
     //FOR DATA
     private final List<PlacesAPI.Result> mResults;
     private final RequestManager glide;
 
     //CONSTRUCTOR
-    public RestoRecyclerAdapter(List<PlacesAPI.Result> results, RequestManager glide){
+    public WorkmatesRecyclerAdapter(List<PlacesAPI.Result> results, RequestManager glide){
         this.mResults = results;
         this.glide = glide;
     }
