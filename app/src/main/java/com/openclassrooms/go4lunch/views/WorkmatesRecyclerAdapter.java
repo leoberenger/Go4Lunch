@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.RequestManager;
 import com.openclassrooms.go4lunch.R;
+import com.openclassrooms.go4lunch.models.User;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import java.util.List;
@@ -16,38 +17,38 @@ import java.util.List;
  * Created by berenger on 06/03/2018.
  */
 
-public class WorkmatesRecyclerAdapter extends RecyclerView.Adapter<RestoViewHolder>{
+public class WorkmatesRecyclerAdapter extends RecyclerView.Adapter<WorkmatesViewHolder>{
 
     //FOR DATA
-    private final List<PlacesAPI.Result> mResults;
+    private final List<User> workmates;
     private final RequestManager glide;
 
     //CONSTRUCTOR
-    public WorkmatesRecyclerAdapter(List<PlacesAPI.Result> results, RequestManager glide){
-        this.mResults = results;
+    public WorkmatesRecyclerAdapter(List<User> workmates, RequestManager glide){
+        this.workmates = workmates;
         this.glide = glide;
     }
 
-    public PlacesAPI.Result getResult(int position){
-        return this.mResults.get(position);
+    public User getUser(int position){
+        return this.workmates.get(position);
     }
 
     @Override
-    public RestoViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public WorkmatesViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.resto_recycler_view_item, parent, false);
+        View view = inflater.inflate(R.layout.workmates_recycler_view_item, parent, false);
 
-        return new RestoViewHolder(view);
+        return new WorkmatesViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RestoViewHolder viewHolder, int position){
-        viewHolder.updateWithArticle(this.mResults.get(position), this.glide);
+    public void onBindViewHolder(WorkmatesViewHolder viewHolder, int position){
+        viewHolder.updateWithUser(this.workmates.get(position), this.glide);
     }
 
     @Override
     public int getItemCount() {
-        return this.mResults.size();
+        return this.workmates.size();
     }
 }

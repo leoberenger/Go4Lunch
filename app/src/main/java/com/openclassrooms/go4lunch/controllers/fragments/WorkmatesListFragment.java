@@ -14,9 +14,12 @@ import com.bumptech.glide.Glide;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.controllers.activities.DetailActivity;
 import com.openclassrooms.go4lunch.managers.PlacesMgr;
+import com.openclassrooms.go4lunch.managers.WorkmatesMgr;
+import com.openclassrooms.go4lunch.models.User;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 import com.openclassrooms.go4lunch.utils.ItemClickSupport;
 import com.openclassrooms.go4lunch.views.RestoRecyclerAdapter;
+import com.openclassrooms.go4lunch.views.WorkmatesRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +35,8 @@ public class WorkmatesListFragment extends Fragment {
     // FOR DESIGN
     @BindView(R.id.recycler_view) protected RecyclerView mRecyclerView;
 
-    private RestoRecyclerAdapter adapter;
-    private List<PlacesAPI.Result> places;
+    private WorkmatesRecyclerAdapter adapter;
+    private List<User> workmates;
 
     public WorkmatesListFragment() { }
 
@@ -45,10 +48,10 @@ public class WorkmatesListFragment extends Fragment {
         this.configureRecyclerView();
         this.configureOnClickRecyclerView();
 
-        PlacesMgr placesMgr = PlacesMgr.getInstance();
-        PlacesAPI placesAPI = placesMgr.getPlaces();
+        WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
+        workmates = workmatesMgr.getWorkmates();
 
-        updateUI(placesAPI);
+        updateUI(workmates);
 
         return view;
     }
@@ -59,8 +62,8 @@ public class WorkmatesListFragment extends Fragment {
     // -----------------
 
     void configureRecyclerView(){
-        this.places = new ArrayList<>();
-        this.adapter = new RestoRecyclerAdapter(this.places, Glide.with(this));
+        this.workmates = new ArrayList<>();
+        this.adapter = new WorkmatesRecyclerAdapter(this.workmates, Glide.with(this));
         this.mRecyclerView.setAdapter(this.adapter);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -70,9 +73,9 @@ public class WorkmatesListFragment extends Fragment {
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        String placeId = adapter.getResult(position).getPlaceId();
+                        String selectedRestoId = adapter.getUser(position).getSelectedRestoId();
                         Intent intent = new Intent(getActivity(), DetailActivity.class);
-                        intent.putExtra("PLACE_ID", placeId);
+                        intent.putExtra("PLACE_ID", selectedRestoId);
                         startActivity(intent);
                     }
                 });
@@ -82,9 +85,9 @@ public class WorkmatesListFragment extends Fragment {
     // UPDATE UI
     // -----------------
 
-    void updateUI(PlacesAPI results){
-        places.clear();
-        places.addAll(results.getResults());
+    void updateUI(List<User> users){
+        workmates.clear();
+        workmates.addAll(users);
         adapter.notifyDataSetChanged();
     }
 }

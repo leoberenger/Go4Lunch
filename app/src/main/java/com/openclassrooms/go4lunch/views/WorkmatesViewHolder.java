@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.openclassrooms.go4lunch.R;
+import com.openclassrooms.go4lunch.models.User;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import butterknife.BindView;
@@ -28,9 +29,9 @@ public class WorkmatesViewHolder extends RecyclerView.ViewHolder{
     }
 
 
-    public void updateWithWorkmate(PlacesAPI.Result result, RequestManager glide){
-        this.mTitle.setText(result.getName());
-        glide.load(result.getIcon()).into(mImage);
+    public void updateWithUser(User workmate, RequestManager glide){
+        this.mTitle.setText(workmate.getUsername());
+        glide.load(workmate.getUrlPicture()).into(mImage);
     }
 
 }

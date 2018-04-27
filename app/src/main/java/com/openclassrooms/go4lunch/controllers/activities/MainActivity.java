@@ -42,13 +42,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
 import com.openclassrooms.go4lunch.apis.UserHelper;
+import com.openclassrooms.go4lunch.controllers.fragments.WorkmatesListFragment;
 import com.openclassrooms.go4lunch.managers.PlacesMgr;
+import com.openclassrooms.go4lunch.managers.WorkmatesMgr;
 import com.openclassrooms.go4lunch.models.User;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 import com.openclassrooms.go4lunch.controllers.fragments.RestoListFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //FOR HTTP REQUEST
     private Disposable mDisposable;
-
     private String placeId;
 
     //------------------------
@@ -121,6 +127,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getMap(mapFragment);
         replaceCurrentFragment(mapFragment);
+
+        //Set Workmates list
+        final WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
+
+        UserHelper.getAllUsers().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<User> workmates = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.e("MainActivit getAllUsers", document.getId() + " => " + document.getData());
+                        String userId = "";
+                        String username = "";
+                        String selectedRestoId = "";
+                        String urlPhoto= "";
+                        User user = new User(userId, username, urlPhoto, selectedRestoId);
+                        workmates.add(user);
+                    }
+                    workmatesMgr.setWorkmates(workmates);
+                } else {
+                    Log.e("MainActivit getAllUsers", "Error getting documents: ", task.getException());
+                }
+            }
+        });
+
+
+
     }
 
     @Override
@@ -215,6 +248,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case R.id.restos_list:
                         selectedFragment = new RestoListFragment();
+                        break;
+                    case R.id.workmates_list:
+                        selectedFragment = new WorkmatesListFragment();
                         break;
                 }
                 replaceCurrentFragment(selectedFragment);
@@ -362,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     // --------------------------
-    // NEARBY SEARCH HTTP REQUEST
+    // REQUESTS
     // --------------------------
 
     @Override
