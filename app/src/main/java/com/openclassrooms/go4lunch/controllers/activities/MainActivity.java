@@ -184,12 +184,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         User currentUser = documentSnapshot.toObject(User.class);
                         placeId = currentUser.getSelectedRestoId();
                         Log.e("MainActivity onSuccess", "placeId = " + placeId);
+                        if(placeId == null){
+                            Toast.makeText(getApplicationContext(), "No Restaurant Selected yet", Toast.LENGTH_LONG).show();
+                        }else{
                         Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
                         intent.putExtra("PLACE_ID", placeId);
                         startActivity(intent);
+                        }
                     }
                 });
-                Toast.makeText(this, "Your Lunch Page", Toast.LENGTH_LONG).show();
                 break;
             case R.id.activity_main_drawer_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

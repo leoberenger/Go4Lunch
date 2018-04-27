@@ -51,7 +51,6 @@ public class WorkmatesListFragment extends Fragment {
 
         WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
         List<User> users = workmatesMgr.getWorkmates();
-        Log.e("WmListFragment", "workmates size = " + workmates.size() + ", users size = " + users.size());
 
         updateUI(users);
 

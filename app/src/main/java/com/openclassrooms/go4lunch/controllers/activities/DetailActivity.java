@@ -25,6 +25,8 @@ import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
 import com.openclassrooms.go4lunch.apis.UserHelper;
 import com.openclassrooms.go4lunch.controllers.fragments.RestoListFragment;
 import com.openclassrooms.go4lunch.managers.PlacesMgr;
+import com.openclassrooms.go4lunch.managers.WorkmatesMgr;
+import com.openclassrooms.go4lunch.models.User;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 import com.openclassrooms.go4lunch.views.RestoRecyclerAdapter;
 import com.openclassrooms.go4lunch.views.WorkmatesRecyclerAdapter;
@@ -51,8 +53,8 @@ public class DetailActivity extends AppCompatActivity {
 
     //RECYCLER VIEW
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
-    private RestoRecyclerAdapter adapter;
-    private List<PlacesAPI.Result> places;
+    private WorkmatesRecyclerAdapter adapter;
+    private List<User> workmates;
 
 
     @Override
@@ -61,18 +63,19 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
+        this.configureToolBar();
+
+        //Retrieve Place ID
         Intent intent = getIntent();
         final String placeId = intent.getStringExtra("PLACE_ID");
         Log.e("DetailActivity", "placeID=" + placeId);
         executeHttpRequestWithRetrofit(placeId);
-        this.configureToolBar();
 
-
-        //RECYCLER VIEW TEST
+        //Show Workmates going to this restaurant
         this.configureRecyclerView();
-        PlacesMgr placesMgr = PlacesMgr.getInstance();
-        PlacesAPI placesAPI = placesMgr.getPlaces();
-        updateUI(placesAPI);
+        WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
+        List<User> users = workmatesMgr.getWorkmates();
+        updateUI(users);
 
         likeBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -163,15 +166,15 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     void configureRecyclerView(){
-        this.places = new ArrayList<>();
-        this.adapter = new RestoRecyclerAdapter(this.places, Glide.with(this));
+        this.workmates = new ArrayList<>();
+        this.adapter = new WorkmatesRecyclerAdapter(this.workmates, Glide.with(this));
         this.mRecyclerView.setAdapter(this.adapter);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    void updateUI(PlacesAPI results){
-        places.clear();
-        places.addAll(results.getResults());
+    void updateUI(List<User> users){
+        workmates.clear();
+        workmates.addAll(users);
         adapter.notifyDataSetChanged();
     }
 }
