@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.openclassrooms.go4lunch.R;
@@ -74,10 +75,16 @@ public class WorkmatesListFragment extends Fragment {
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        String selectedRestoId = adapter.getUser(position).getSelectedRestoId();
-                        Intent intent = new Intent(getActivity(), DetailActivity.class);
-                        intent.putExtra("PLACE_ID", selectedRestoId);
-                        startActivity(intent);
+
+                        if(adapter.getUser(position).getSelectedRestoId() !=null){
+                            String selectedRestoId = adapter.getUser(position).getSelectedRestoId();
+                            Intent intent = new Intent(getActivity(), DetailActivity.class);
+                            intent.putExtra("PLACE_ID", selectedRestoId);
+                            startActivity(intent);
+                        }else{
+                            Toast.makeText(getContext(), "No Restaurant Selected Yet", Toast.LENGTH_LONG).show();
+                        }
+
                     }
                 });
     }

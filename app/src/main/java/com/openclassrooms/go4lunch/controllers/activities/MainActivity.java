@@ -138,8 +138,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     List<User> workmates = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         User user = document.toObject(User.class);
-                        workmates.add(user);
-                    }workmatesMgr.setWorkmates(workmates);
+                        //Add only if different from current authenticated user
+                        if(! user.getUserId().equals(getCurrentUser().getUid())){
+                            workmates.add(user);
+                        }
+                    }
+                    workmatesMgr.setWorkmates(workmates);
                 } else {
                     Log.e("MainActivit getAllUsers", "Error getting documents: ", task.getException());
                 }

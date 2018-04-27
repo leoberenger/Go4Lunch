@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.openclassrooms.go4lunch.R;
@@ -56,6 +57,7 @@ public class DetailActivity extends AppCompatActivity {
     private WorkmatesRecyclerAdapter adapter;
     private List<User> workmates;
 
+    WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +75,7 @@ public class DetailActivity extends AppCompatActivity {
 
         //Show Workmates going to this restaurant
         this.configureRecyclerView();
-        WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
-        List<User> users = workmatesMgr.getWorkmates();
-        updateUI(users);
+        showWorkmatesGoingToThisRestaurant(placeId);
 
         likeBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -170,6 +170,18 @@ public class DetailActivity extends AppCompatActivity {
         this.adapter = new WorkmatesRecyclerAdapter(this.workmates, Glide.with(this));
         this.mRecyclerView.setAdapter(this.adapter);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void showWorkmatesGoingToThisRestaurant(String placeId){
+        List<User> users = workmatesMgr.getWorkmates();
+        List<User> usersGoingToThisRestaurant = new ArrayList<>();
+        for(int i = 0; i<users.size(); i++){
+            User user = users.get(i);
+            if(user.getSelectedRestoId() != null && user.getSelectedRestoId().equals(placeId)){
+                usersGoingToThisRestaurant.add(user);
+            }
+        }
+        updateUI(usersGoingToThisRestaurant);
     }
 
     void updateUI(List<User> users){

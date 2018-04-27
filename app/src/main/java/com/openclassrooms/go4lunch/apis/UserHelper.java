@@ -41,11 +41,6 @@ public class UserHelper {
 
         }
 
-        public static Query getAllUsersForSelectedResto(String selectedRestoId){
-            return UserHelper.getUsersCollection()
-                    .whereEqualTo("selectedRestoId", selectedRestoId);
-        }
-
         // --- UPDATE ---
 
         public static Task<Void> updateUsername(String username, String uid) {
