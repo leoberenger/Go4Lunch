@@ -36,7 +36,7 @@ public class RestoRecyclerAdapter extends RecyclerView.Adapter<RestoViewHolder>{
     public RestoViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.fragment_main_item, parent, false);
+        View view = inflater.inflate(R.layout.fragment_resto_list_item, parent, false);
 
         return new RestoViewHolder(view);
     }

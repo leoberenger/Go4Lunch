@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -14,13 +16,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
 import com.openclassrooms.go4lunch.apis.UserHelper;
+import com.openclassrooms.go4lunch.managers.PlacesMgr;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
+import com.openclassrooms.go4lunch.views.RestoRecyclerAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +47,11 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.activity_detail_toolbar) Toolbar toolbar;
     @BindView(R.id.activity_detail_select_resto_fab) FloatingActionButton selectRestoFab;
 
+
+    //RECYCLER VIEW
+    @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
+    private RestoRecyclerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +63,13 @@ public class DetailActivity extends AppCompatActivity {
         Log.e("DetailActivity", "placeID=" + placeId);
         executeHttpRequestWithRetrofit(placeId);
         this.configureToolBar();
+
+
+        //RECYCLER VIEW TEST
+        this.configureRecyclerView();
+        PlacesMgr placesMgr = PlacesMgr.getInstance();
+        PlacesAPI placesAPI = placesMgr.getPlaces();
+        updateUI(placesAPI);
 
         likeBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -137,5 +157,18 @@ public class DetailActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
             }
         };
+    }
+
+    void configureRecyclerView(){
+        this.places = new ArrayList<>();
+        this.adapter = new RestoRecyclerAdapter(this.places, Glide.with(this));
+        this.mRecyclerView.setAdapter(this.adapter);
+        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    void updateUI(PlacesAPI results){
+        places.clear();
+        places.addAll(results.getResults());
+        adapter.notifyDataSetChanged();
     }
 }

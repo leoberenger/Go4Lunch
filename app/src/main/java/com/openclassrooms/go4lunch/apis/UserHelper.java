@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.openclassrooms.go4lunch.models.User;
 
 public class UserHelper {
@@ -29,6 +30,11 @@ public class UserHelper {
 
         public static Task<DocumentSnapshot> getUser(String uid){
             return UserHelper.getUsersCollection().document(uid).get();
+        }
+
+        public static Query getAllUsersForSelectedResto(String selectedRestoId){
+            return UserHelper.getUsersCollection()
+                    .whereEqualTo("selectedRestoId", selectedRestoId);
         }
 
         // --- UPDATE ---

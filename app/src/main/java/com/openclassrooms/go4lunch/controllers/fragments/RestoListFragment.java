@@ -23,7 +23,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.Disposable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +30,7 @@ import io.reactivex.disposables.Disposable;
 public class RestoListFragment extends Fragment {
 
     // FOR DESIGN
-    @BindView(R.id.fragment_main_recycler_view)
+    @BindView(R.id.recycler_view)
     protected RecyclerView mRecyclerView;
 
     private RestoRecyclerAdapter adapter;
@@ -41,7 +40,7 @@ public class RestoListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.recycler_view, container, false);
         ButterKnife.bind(this, view);
 
         this.configureRecyclerView();
@@ -68,7 +67,7 @@ public class RestoListFragment extends Fragment {
     }
 
     void configureOnClickRecyclerView(){
-        ItemClickSupport.addTo(mRecyclerView, R.layout.fragment_main_item)
+        ItemClickSupport.addTo(mRecyclerView, R.layout.fragment_resto_list_item)
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {

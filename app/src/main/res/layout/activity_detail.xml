@@ -58,14 +58,6 @@
                 android:background="@color/colorPrimary"
                 android:orientation="vertical">
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/activity_detail_select_resto_fab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|end"
-                    android:padding="20dp"
-                    android:src="@drawable/ic_check_circle_black_24dp" />
-
                 <TextView
                     android:id="@+id/activity_detail_name"
                     android:layout_width="match_parent"
@@ -117,14 +109,22 @@
 
             </LinearLayout>
 
+            <!-- Import RecyclerView -->
+            <include layout="@layout/recycler_view"/>
+
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
-
     </android.support.v4.widget.NestedScrollView>
 
-
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/activity_detail_select_resto_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/app_bar_layout"
+        app:layout_anchorGravity="bottom|right|end"
+        android:padding="20dp"
+        android:src="@drawable/ic_check_circle_black_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

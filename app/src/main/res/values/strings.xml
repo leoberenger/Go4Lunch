@@ -44,7 +44,7 @@
     <string name="error_no_internet">Aucune connexion internet !</string>
     <string name="error_unknown_error">Une erreur inconnue s\'est produite&#8230;</string>
     <string name="connection_succeed">Authentification réussie !</string>
-    <string name="button_login_text_logged">Afficher le profil</string>
+    <string name="button_login_text_logged"></string>
     <string name="button_login_text_not_logged">Connexion</string>
 
     <!-- LOGIN ACTIVITY -->
