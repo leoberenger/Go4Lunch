@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ import butterknife.ButterKnife;
 public class WorkmatesListFragment extends Fragment {
 
     // FOR DESIGN
-    @BindView(R.id.recycler_view) protected RecyclerView mRecyclerView;
+    @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
 
     private WorkmatesRecyclerAdapter adapter;
     private List<User> workmates;
@@ -49,9 +50,10 @@ public class WorkmatesListFragment extends Fragment {
         this.configureOnClickRecyclerView();
 
         WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
-        workmates = workmatesMgr.getWorkmates();
+        List<User> users = workmatesMgr.getWorkmates();
+        Log.e("WmListFragment", "workmates size = " + workmates.size() + ", users size = " + users.size());
 
-        updateUI(workmates);
+        updateUI(users);
 
         return view;
     }
