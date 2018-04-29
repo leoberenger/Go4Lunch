@@ -43,7 +43,7 @@ public class RestoRecyclerAdapter extends RecyclerView.Adapter<RestoViewHolder>{
 
     @Override
     public void onBindViewHolder(RestoViewHolder viewHolder, int position){
-        viewHolder.updateWithArticle(this.mResults.get(position), this.glide);
+        viewHolder.updateWithRestaurant(this.mResults.get(position), this.glide);
     }
 
     @Override
