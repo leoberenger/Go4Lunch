@@ -96,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
+    private PlacesMgr placesMgr = PlacesMgr.getInstance();
+
+
     //------------------------
     // OVERRIDE METHODS
     //------------------------
@@ -311,8 +314,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 @Override
                                 public void onNext(PlacesAPI places) {
                                     Log.e("MapsActivity", "On Next");
-                                    PlacesMgr placesMgr = PlacesMgr.getInstance();
-                                    placesMgr.setPlaces(places);
+
+                                    final List<PlacesAPI.Result> nearbyRestaurants = new ArrayList<>();
+
+                                    for(int i = 0; i<places.getResults().size(); i++){
+                                        placeId = places.getResults().get(i).getPlaceId();
+                                        placesMgr.executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>(){
+                                        @Override
+                                        public void onNext(PlacesAPI place) {
+                                            Log.e("DetailActivity", "On Next");
+                                            nearbyRestaurants.add(place.getResult());
+                                            Log.e("MainAct onNextonNext", "added place = " + place.getResult().getName());
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            Log.e("DetailActivity", "On Error"+Log.getStackTraceString(e));
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+                                            Log.e("DetailActivity", "On Complete");
+                                        }
+                                    });
+                                    }
+                                    placesMgr.setNearbyRestaurants(nearbyRestaurants);
                                     showRestaurantsOnMapWithMarkers(places);
                                 }
                                 @Override

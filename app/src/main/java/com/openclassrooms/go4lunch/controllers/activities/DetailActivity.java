@@ -42,7 +42,6 @@ import io.reactivex.observers.DisposableObserver;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private Disposable mDisposable;
     @BindView(R.id.activity_detail_name) TextView mTextViewName;
     @BindView(R.id.activity_detail_type_and_address) TextView mTextViewTypeAndAddress;
     @BindView(R.id.activity_detail_like_btn) Button likeBtn;
@@ -73,7 +72,7 @@ public class DetailActivity extends AppCompatActivity {
         final String placeId = intent.getStringExtra("PLACE_ID");
         Log.e("DetailActivity", "placeID=" + placeId);
 
-        executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>(){
+        placesMgr.executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>(){
             @Override
             public void onNext(PlacesAPI place) {
                 Log.e("DetailActivity", "On Next");
@@ -128,18 +127,6 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        this.disposeWhenDestroy();
-    }
-
-    private void disposeWhenDestroy(){
-        if(this.mDisposable != null && !this.mDisposable.isDisposed())
-            this.mDisposable.dispose();
-    }
-
-
     private void configureToolBar(){
         this.toolbar = (Toolbar) findViewById(R.id.activity_detail_toolbar);
         setSupportActionBar(toolbar);
@@ -190,11 +177,4 @@ public class DetailActivity extends AppCompatActivity {
         workmates.addAll(users);
         adapter.notifyDataSetChanged();
     }
-
-    private void executeHttpRequestToGetRestaurantDetails(final String placeId, DisposableObserver<PlacesAPI> observer){
-        Log.e("DetAct Request", "placeID = " + placeId);
-        this.mDisposable = GMPlacesStreams.streamFetchRestaurant(placeId)
-                .subscribeWith(observer);
-    }
-
 }

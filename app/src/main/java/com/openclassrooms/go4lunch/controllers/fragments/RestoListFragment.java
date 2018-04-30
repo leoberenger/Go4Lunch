@@ -47,9 +47,9 @@ public class RestoListFragment extends Fragment {
         this.configureOnClickRecyclerView();
 
         PlacesMgr placesMgr = PlacesMgr.getInstance();
-        PlacesAPI placesAPI = placesMgr.getPlaces();
+        List<PlacesAPI.Result> nearbyRestaurants = placesMgr.getNearbyRestaurants();
 
-        updateUI(placesAPI);
+        updateUI(nearbyRestaurants);
 
         return view;
     }
@@ -83,9 +83,9 @@ public class RestoListFragment extends Fragment {
     // UPDATE UI
     // -----------------
 
-    void updateUI(PlacesAPI results){
+    void updateUI(List<PlacesAPI.Result> nearbyRestaurants){
         places.clear();
-        places.addAll(results.getResults());
+        places.addAll(nearbyRestaurants);
         adapter.notifyDataSetChanged();
     }
 }
