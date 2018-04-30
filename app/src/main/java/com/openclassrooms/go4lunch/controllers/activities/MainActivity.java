@@ -30,6 +30,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -60,7 +61,9 @@ import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
+        GoogleMap.OnInfoWindowClickListener{
 
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigation;
 
@@ -325,6 +328,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 //Position Location Button in the bottom right corner
                 positionLocationButton();
+
+                mMap.setOnInfoWindowClickListener(MainActivity.this);
             }
         });
     }
@@ -396,26 +401,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // This loop will go through all the results and add marker on each location.
         for (int i = 0; i < results.getResults().size(); i++) {
 
-            Double lat = results.getResults().get(i).getGeometry().getLocation().getLat();
-            Double lng = results.getResults().get(i).getGeometry().getLocation().getLng();
-            String placeName = results.getResults().get(i).getName();
-            String vicinity = results.getResults().get(i).getVicinity();
+            PlacesAPI.Result restaurant = results.getResults().get(i);
 
-            MarkerOptions markerOptions = new MarkerOptions();
-            LatLng latLng = new LatLng(lat, lng);
+            Double lat = restaurant.getGeometry().getLocation().getLat();
+            Double lng = restaurant.getGeometry().getLocation().getLng();
+            String name = restaurant.getName();
+            String tag = restaurant.getPlaceId();
 
-            // Position of Marker on Map
-            markerOptions.position(latLng);
-            // Adding Title to the Marker
-            markerOptions.title(placeName + " : " + vicinity);
-            // Adding colour to the marker
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            // Adding Marker to the Camera.
-            Marker m = mMap.addMarker(markerOptions);
+            int workmates = workmatesMgr.getNbWorkmatesGoingToThisResto(restaurant.getPlaceId());
 
-            // move map camera
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            float hue = (workmates != 0)?
+                            BitmapDescriptorFactory.HUE_GREEN:
+                            BitmapDescriptorFactory.HUE_ORANGE;
+
+
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(lat, lng))
+                    .title(name)
+                    .icon(BitmapDescriptorFactory.defaultMarker(hue)))
+                    .setTag(tag);
         }
     }
 
@@ -502,4 +506,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
     }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
+        placeId = marker.getTag().toString();
+
+        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+        intent.putExtra("PLACE_ID", placeId);
+        startActivity(intent);
+    }
 }
