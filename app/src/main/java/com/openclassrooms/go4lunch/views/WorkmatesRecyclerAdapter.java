@@ -22,11 +22,13 @@ public class WorkmatesRecyclerAdapter extends RecyclerView.Adapter<WorkmatesView
     //FOR DATA
     private final List<User> workmates;
     private final RequestManager glide;
+    boolean isMainActivityFragment = false;
 
     //CONSTRUCTOR
-    public WorkmatesRecyclerAdapter(List<User> workmates, RequestManager glide){
+    public WorkmatesRecyclerAdapter(List<User> workmates, RequestManager glide, boolean isMainActivityFragment){
         this.workmates = workmates;
         this.glide = glide;
+        this.isMainActivityFragment = isMainActivityFragment;
     }
 
     public User getUser(int position){
@@ -44,7 +46,7 @@ public class WorkmatesRecyclerAdapter extends RecyclerView.Adapter<WorkmatesView
 
     @Override
     public void onBindViewHolder(WorkmatesViewHolder viewHolder, int position){
-        viewHolder.updateWithUser(this.workmates.get(position), this.glide);
+        viewHolder.updateWithUser(this.workmates.get(position), this.glide, this.isMainActivityFragment);
     }
 
     @Override

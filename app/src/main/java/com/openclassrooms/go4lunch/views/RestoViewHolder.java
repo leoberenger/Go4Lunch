@@ -35,7 +35,7 @@ public class RestoViewHolder extends RecyclerView.ViewHolder{
     public void updateWithRestaurant(PlacesAPI.Result result, RequestManager glide){
         this.mTitle.setText(result.getName());
 
-        int nbWorkmatesGoingToThisRestaurant = workmatesMgr.getNbWorkmatesGoingToThisResto(result.getPlaceId());
+        int nbWorkmatesGoingToThisRestaurant = workmatesMgr.getNbWorkmatesGoing(result.getPlaceId());
         String nbWorkmates = "(" + String.valueOf(nbWorkmatesGoingToThisRestaurant) + ")";
         this.mNbWorkmates.setText(nbWorkmates);
 

@@ -29,8 +29,12 @@ public class WorkmatesViewHolder extends RecyclerView.ViewHolder{
     }
 
 
-    public void updateWithUser(User workmate, RequestManager glide){
-        this.mTitle.setText(workmate.getUsername());
+    public void updateWithUser(User workmate, RequestManager glide, boolean isMainActivityFragment){
+
+        String text = (isMainActivityFragment)?
+                workmate.getUsername() + " is eating at " + workmate.getSelectedRestoName():
+                workmate.getUsername() + " is joining!";
+        this.mTitle.setText(text);
         glide.load(workmate.getUrlPicture()).into(mImage);
     }
 

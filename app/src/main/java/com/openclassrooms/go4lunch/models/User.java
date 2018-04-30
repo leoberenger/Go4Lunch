@@ -7,6 +7,7 @@ public class User {
     private String userId;
     private String username;
     @Nullable private String selectedRestoId;
+    @Nullable private String selectedRestoName;
     @Nullable private String urlPicture;
 
     //----------------------
@@ -15,11 +16,12 @@ public class User {
 
     public User() { }
 
-    public User(String userId, String username, @Nullable String urlPicture, @Nullable String selectedRestoId) {
+    public User(String userId, String username, String urlPicture, String selectedRestoId, String selectedRestoName) {
         this.userId = userId;
         this.username = username;
-        this.selectedRestoId = selectedRestoId;
         this.urlPicture = urlPicture;
+        this.selectedRestoId = selectedRestoId;
+        this.selectedRestoName = selectedRestoName;
     }
 
 
@@ -45,6 +47,11 @@ public class User {
         return selectedRestoId;
     }
 
+    @Nullable
+    public String getSelectedRestoName() {
+        return selectedRestoName;
+    }
+
 
     //----------------------
     // SETTERS
@@ -64,5 +71,9 @@ public class User {
 
     public void setSelectedRestoId(@Nullable String selectedRestoId) {
         this.selectedRestoId = selectedRestoId;
+    }
+
+    public void setSelectedRestoName(@Nullable String selectedRestoName) {
+        this.selectedRestoName = selectedRestoName;
     }
 }

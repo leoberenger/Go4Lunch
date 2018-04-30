@@ -65,7 +65,7 @@ public class WorkmatesListFragment extends Fragment {
 
     void configureRecyclerView(){
         this.workmates = new ArrayList<>();
-        this.adapter = new WorkmatesRecyclerAdapter(this.workmates, Glide.with(this));
+        this.adapter = new WorkmatesRecyclerAdapter(this.workmates, Glide.with(this), true);
         this.mRecyclerView.setAdapter(this.adapter);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }

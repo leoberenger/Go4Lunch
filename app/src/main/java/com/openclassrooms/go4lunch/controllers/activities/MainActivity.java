@@ -30,7 +30,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -408,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements
             String name = restaurant.getName();
             String tag = restaurant.getPlaceId();
 
-            int workmates = workmatesMgr.getNbWorkmatesGoingToThisResto(restaurant.getPlaceId());
+            int workmates = workmatesMgr.getNbWorkmatesGoing(restaurant.getPlaceId());
 
             float hue = (workmates != 0)?
                             BitmapDescriptorFactory.HUE_GREEN:

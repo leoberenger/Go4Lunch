@@ -26,7 +26,7 @@ public class WorkmatesMgr {
         this.workmates = workmates;
     }
 
-    public int getNbWorkmatesGoingToThisResto(String placeId){
+    public int getNbWorkmatesGoing(String placeId){
         int nbWorkmates = 0;
 
         for(int i = 0; i<workmates.size(); i++){

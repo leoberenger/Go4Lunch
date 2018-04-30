@@ -50,6 +50,7 @@ public class DetailActivity extends BaseActivity {
     PlacesMgr placesMgr = PlacesMgr.getInstance();
     private List<User> workmates;
     private String placeId;
+    private String placeName;
 
 
     @Override
@@ -66,19 +67,6 @@ public class DetailActivity extends BaseActivity {
 
         getRestaurantDetails(placeId);
         getWorkmatesGoing(placeId);
-
-        selectRestoFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getCurrentUser() != null){
-                    UserHelper.updateSelectedRestoId(placeId, getCurrentUser().getUid())
-                            .addOnFailureListener(onFailureListener());
-                }
-                Toast.makeText(getApplication(), "Resto selected : " + placeId, Toast.LENGTH_LONG).show();
-            }
-        });
-
-
     }
 
     @Override
@@ -97,7 +85,7 @@ public class DetailActivity extends BaseActivity {
 
     private void configureRecyclerView(){
         this.workmates = new ArrayList<>();
-        this.adapter = new WorkmatesRecyclerAdapter(this.workmates, Glide.with(this));
+        this.adapter = new WorkmatesRecyclerAdapter(this.workmates, Glide.with(this), false);
         this.mRecyclerView.setAdapter(this.adapter);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -113,6 +101,7 @@ public class DetailActivity extends BaseActivity {
             public void onNext(PlacesAPI place) {
                 Log.e("DetailActivity", "On Next");
                 placesMgr.setRestaurant(place.getResult());
+                placeName = place.getResult().getName();
                 showRestaurantDetails();
             }
 
@@ -185,8 +174,11 @@ public class DetailActivity extends BaseActivity {
         if (getCurrentUser() != null){
             UserHelper.updateSelectedRestoId(placeId, getCurrentUser().getUid())
                     .addOnFailureListener(onFailureListener());
+
+            UserHelper.updateSelectedRestoName(placeName, getCurrentUser().getUid())
+                    .addOnFailureListener(onFailureListener());
         }
-        Toast.makeText(getApplication(), "Resto selected : " + placeId, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplication(), "Resto selected : " + placeName, Toast.LENGTH_LONG).show();
     }
 
 }
