@@ -1,5 +1,7 @@
 package com.openclassrooms.go4lunch.managers;
 
+import android.util.Log;
+
 import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
@@ -23,6 +25,9 @@ public class PlacesMgr {
     private PlacesMgr() {
     }
 
+    // --------------------------
+    // GETTERS
+    // --------------------------
 
     public PlacesAPI.Result getRestaurant() {
         return mRestaurant;
@@ -32,6 +37,9 @@ public class PlacesMgr {
         return mNearbyRestaurants;
     }
 
+    // --------------------------
+    // SETTERS
+    // --------------------------
 
     public void setRestaurant(PlacesAPI.Result restaurant) {
         mRestaurant = restaurant;
@@ -41,6 +49,15 @@ public class PlacesMgr {
         mNearbyRestaurants = nearbyRestaurants;
     }
 
+    // --------------------------
+    // REQUESTS
+    // --------------------------
+
+    public void executeHttpRequestToFindNearbyRestaurants(String position, DisposableObserver<PlacesAPI> observer){
+        Log.e("MainActivity Request", "position = " + position);
+        this.mDisposable = GMPlacesStreams.streamFetchNearbyRestaurants(position)
+                .subscribeWith(observer);
+    }
 
     public void executeHttpRequestToGetRestaurantDetails(final String placeId, DisposableObserver<PlacesAPI> observer){
         this.mDisposable = GMPlacesStreams.streamFetchRestaurant(placeId)

@@ -17,7 +17,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,7 +44,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.openclassrooms.go4lunch.R;
-import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
 import com.openclassrooms.go4lunch.apis.UserHelper;
 import com.openclassrooms.go4lunch.controllers.fragments.WorkmatesListFragment;
 import com.openclassrooms.go4lunch.managers.PlacesMgr;
@@ -97,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String KEY_LOCATION = "location";
 
     private PlacesMgr placesMgr = PlacesMgr.getInstance();
+    private final WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
+    private SupportMapFragment mapFragment = SupportMapFragment.newInstance();
 
 
     //------------------------
@@ -127,31 +127,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         //Show Map Fragment by default
-        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getMap(mapFragment);
         replaceCurrentFragment(mapFragment);
 
         //Set Workmates list
-        final WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
-
-        UserHelper.getAllUsers().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    List<User> workmates = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        User user = document.toObject(User.class);
-                        //Add only if different from current authenticated user
-                        if(! user.getUserId().equals(getCurrentUser().getUid())){
-                            workmates.add(user);
-                        }
-                    }
-                    workmatesMgr.setWorkmates(workmates);
-                } else {
-                    Log.e("MainActivit getAllUsers", "Error getting documents: ", task.getException());
-                }
-            }
-        });
+        setWorkmatesList();
     }
 
     @Override
@@ -165,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        // 5 - Handle back click to close menu
+        //Handle back click to close menu
         if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             this.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
@@ -181,22 +161,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id){
             case R.id.activity_main_drawer_restaurant :
-                UserHelper.getUser(this.getCurrentUser().getUid())
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        User currentUser = documentSnapshot.toObject(User.class);
-                        placeId = currentUser.getSelectedRestoId();
-                        Log.e("MainActivity onSuccess", "placeId = " + placeId);
-                        if(placeId == null){
-                            Toast.makeText(getApplicationContext(), "No Restaurant Selected yet", Toast.LENGTH_LONG).show();
-                        }else{
-                        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-                        intent.putExtra("PLACE_ID", placeId);
-                        startActivity(intent);
-                        }
-                    }
-                });
+                goToDetailActivity();
                 break;
             case R.id.activity_main_drawer_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -266,6 +231,80 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transaction.commit();
     }
 
+    // -----------------
+    // SET DATA
+    // -----------------
+
+    private void getNearbyRestaurants(Location mLastKnownLocation){
+        //Get Nearby Restaurants
+        String currentPosition = mLastKnownLocation.getLatitude() + ", " + + mLastKnownLocation.getLongitude();
+        placesMgr.executeHttpRequestToFindNearbyRestaurants(currentPosition, new DisposableObserver<PlacesAPI>(){
+            @Override
+            public void onNext(PlacesAPI places) {
+                Log.e("MapsActivity", "On Next");
+
+                setNearbyRestaurantsList(places);
+                showRestaurantsOnMapWithMarkers(places);
+            }
+            @Override
+            public void onError(Throwable e) {
+                Log.e("MapsActivity", "On Error"+Log.getStackTraceString(e));
+            }
+            @Override
+            public void onComplete() {
+                Log.e("MapsActivity", "On Complete");
+            }
+        });
+    }
+
+    private void setNearbyRestaurantsList(PlacesAPI places){
+        final List<PlacesAPI.Result> nearbyRestaurants = new ArrayList<>();
+
+        for(int i = 0; i<places.getResults().size(); i++){
+            placeId = places.getResults().get(i).getPlaceId();
+            placesMgr.executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>(){
+                @Override
+                public void onNext(PlacesAPI place) {
+                    Log.e("DetailActivity", "On Next");
+                    nearbyRestaurants.add(place.getResult());
+                    Log.e("MainAct onNextonNext", "added place = " + place.getResult().getName());
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.e("DetailActivity", "On Error"+Log.getStackTraceString(e));
+                }
+
+                @Override
+                public void onComplete() {
+                    Log.e("DetailActivity", "On Complete");
+                }
+            });
+        }
+        placesMgr.setNearbyRestaurants(nearbyRestaurants);
+    }
+
+    private void setWorkmatesList(){
+        UserHelper.getAllUsers().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<User> workmates = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        User user = document.toObject(User.class);
+                        //Add only if different from current authenticated user
+                        if(! user.getUserId().equals(getCurrentUser().getUid())){
+                            workmates.add(user);
+                        }
+                    }
+                    workmatesMgr.setWorkmates(workmates);
+                } else {
+                    Log.e("MainActivit getAllUsers", "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
+
 
     // -----------------
     // MAP FRAGMENT
@@ -308,48 +347,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
 
-                            //Get Nearby Restaurants
-                            String currentPosition = mLastKnownLocation.getLatitude() + ", " + + mLastKnownLocation.getLongitude();
-                            executeHttpRequestToFindNearbyRestaurants(currentPosition, new DisposableObserver<PlacesAPI>(){
-                                @Override
-                                public void onNext(PlacesAPI places) {
-                                    Log.e("MapsActivity", "On Next");
+                            getNearbyRestaurants(mLastKnownLocation);
 
-                                    final List<PlacesAPI.Result> nearbyRestaurants = new ArrayList<>();
-
-                                    for(int i = 0; i<places.getResults().size(); i++){
-                                        placeId = places.getResults().get(i).getPlaceId();
-                                        placesMgr.executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>(){
-                                        @Override
-                                        public void onNext(PlacesAPI place) {
-                                            Log.e("DetailActivity", "On Next");
-                                            nearbyRestaurants.add(place.getResult());
-                                            Log.e("MainAct onNextonNext", "added place = " + place.getResult().getName());
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            Log.e("DetailActivity", "On Error"+Log.getStackTraceString(e));
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-                                            Log.e("DetailActivity", "On Complete");
-                                        }
-                                    });
-                                    }
-                                    placesMgr.setNearbyRestaurants(nearbyRestaurants);
-                                    showRestaurantsOnMapWithMarkers(places);
-                                }
-                                @Override
-                                public void onError(Throwable e) {
-                                    Log.e("MapsActivity", "On Error"+Log.getStackTraceString(e));
-                                }
-                                @Override
-                                public void onComplete() {
-                                    Log.e("MapsActivity", "On Complete");
-                                }
-                            });
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -384,6 +383,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private void positionLocationButton(){
+        View locationButton = ((View) this.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        rlp.setMargins(0, 0, 30, 100);
+    }
+
     private void showRestaurantsOnMapWithMarkers(PlacesAPI results){
         mMap.clear();
         // This loop will go through all the results and add marker on each location.
@@ -412,15 +419,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void positionLocationButton(){
-        View locationButton = ((View) this.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
-        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        rlp.setMargins(0, 0, 30, 100);
-    }
-
-
     // --------------------------
     // REQUESTS
     // --------------------------
@@ -432,11 +430,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.mDisposable.dispose();
     }
 
-    private void executeHttpRequestToFindNearbyRestaurants(String position, DisposableObserver<PlacesAPI> observer){
-        Log.e("MainActivity Request", "position = " + position);
-        this.mDisposable = GMPlacesStreams.streamFetchNearbyRestaurants(position)
-                .subscribeWith(observer);
-    }
 
     // -----------------
     // PERMISSIONS
@@ -473,6 +466,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         showCurrentLocationAndEnableControls();
     }
 
+    // -----------------
+    // USER MANAGEMENT
+    // -----------------
+
+    @Nullable
+    private FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
+
     private void logoutUser(){
         AuthUI.getInstance()
                 .signOut(this)
@@ -484,8 +484,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
     }
 
-
-    @Nullable
-    private FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
+    private void goToDetailActivity(){
+        UserHelper.getUser(this.getCurrentUser().getUid())
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        User currentUser = documentSnapshot.toObject(User.class);
+                        placeId = currentUser.getSelectedRestoId();
+                        if(placeId == null){
+                            Toast.makeText(getApplicationContext(), "No Restaurant Selected yet", Toast.LENGTH_LONG).show();
+                        }else{
+                            Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                            intent.putExtra("PLACE_ID", placeId);
+                            startActivity(intent);
+                        }
+                    }
+                });
+    }
 
 }

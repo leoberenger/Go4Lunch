@@ -32,9 +32,9 @@ public class RestoListFragment extends Fragment {
     // FOR DESIGN
     @BindView(R.id.recycler_view)
     protected RecyclerView mRecyclerView;
-
     private RestoRecyclerAdapter adapter;
-    private List<PlacesAPI.Result> places;
+    private List<PlacesAPI.Result> nearbyRestaurants;
+    PlacesMgr placesMgr = PlacesMgr.getInstance();
 
     public RestoListFragment() { }
 
@@ -46,10 +46,7 @@ public class RestoListFragment extends Fragment {
         this.configureRecyclerView();
         this.configureOnClickRecyclerView();
 
-        PlacesMgr placesMgr = PlacesMgr.getInstance();
-        List<PlacesAPI.Result> nearbyRestaurants = placesMgr.getNearbyRestaurants();
-
-        updateUI(nearbyRestaurants);
+        showNearbyRestaurants();
 
         return view;
     }
@@ -60,8 +57,8 @@ public class RestoListFragment extends Fragment {
     // -----------------
 
     void configureRecyclerView(){
-        this.places = new ArrayList<>();
-        this.adapter = new RestoRecyclerAdapter(this.places, Glide.with(this));
+        this.nearbyRestaurants = new ArrayList<>();
+        this.adapter = new RestoRecyclerAdapter(this.nearbyRestaurants, Glide.with(this));
         this.mRecyclerView.setAdapter(this.adapter);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -83,9 +80,10 @@ public class RestoListFragment extends Fragment {
     // UPDATE UI
     // -----------------
 
-    void updateUI(List<PlacesAPI.Result> nearbyRestaurants){
-        places.clear();
-        places.addAll(nearbyRestaurants);
+    void showNearbyRestaurants(){
+        List<PlacesAPI.Result> places = placesMgr.getNearbyRestaurants();
+        this.nearbyRestaurants.clear();
+        this.nearbyRestaurants.addAll(places);
         adapter.notifyDataSetChanged();
     }
 }
