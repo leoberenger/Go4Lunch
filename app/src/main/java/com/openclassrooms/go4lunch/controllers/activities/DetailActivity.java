@@ -58,6 +58,7 @@ public class DetailActivity extends AppCompatActivity {
     private List<User> workmates;
 
     WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
+    PlacesMgr placesMgr = PlacesMgr.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,25 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final String placeId = intent.getStringExtra("PLACE_ID");
         Log.e("DetailActivity", "placeID=" + placeId);
-        executeHttpRequestWithRetrofit(placeId);
+
+        executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>(){
+            @Override
+            public void onNext(PlacesAPI place) {
+                Log.e("DetailActivity", "On Next");
+                placesMgr.setRestaurant(place.getResult());
+                showRestaurantDetails();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("DetailActivity", "On Error"+Log.getStackTraceString(e));
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e("DetailActivity", "On Complete");
+            }
+        });
 
         //Show Workmates going to this restaurant
         this.configureRecyclerView();
@@ -120,34 +139,15 @@ public class DetailActivity extends AppCompatActivity {
             this.mDisposable.dispose();
     }
 
-    private void executeHttpRequestWithRetrofit(final String placeId){
-        Log.e("DetAct execHttp", "placeID=" + placeId);
-        this.mDisposable = GMPlacesStreams.streamFetchRestaurant(placeId)
-                .subscribeWith(new DisposableObserver<PlacesAPI>(){
-                    @Override
-                    public void onNext(PlacesAPI place) {
-                        Log.e("DetailActivity", "On Next");
-                        showRestaurantDetails(place.getResult());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e("DetailActivity", "On Error"+Log.getStackTraceString(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.e("DetailActivity", "On Complete");
-                    }
-                });
-    }
 
     private void configureToolBar(){
         this.toolbar = (Toolbar) findViewById(R.id.activity_detail_toolbar);
         setSupportActionBar(toolbar);
     }
 
-    private void showRestaurantDetails(PlacesAPI.Result place){
+    private void showRestaurantDetails(){
+        PlacesAPI.Result place = placesMgr.getRestaurant();
+
         mTextViewName.setText(place.getName());
         String typeAndAddress = place.getTypes().get(0) + " restaurant - " + place.getFormattedAddress();
         mTextViewTypeAndAddress.setText(typeAndAddress);
@@ -190,4 +190,11 @@ public class DetailActivity extends AppCompatActivity {
         workmates.addAll(users);
         adapter.notifyDataSetChanged();
     }
+
+    private void executeHttpRequestToGetRestaurantDetails(final String placeId, DisposableObserver<PlacesAPI> observer){
+        Log.e("DetAct Request", "placeID = " + placeId);
+        this.mDisposable = GMPlacesStreams.streamFetchRestaurant(placeId)
+                .subscribeWith(observer);
+    }
+
 }
