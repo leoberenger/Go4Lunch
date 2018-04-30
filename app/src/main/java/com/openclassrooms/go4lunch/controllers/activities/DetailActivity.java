@@ -28,6 +28,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.observers.DisposableObserver;
 
 public class DetailActivity extends BaseActivity {
@@ -44,10 +45,12 @@ public class DetailActivity extends BaseActivity {
     //RECYCLER VIEW
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
     private WorkmatesRecyclerAdapter adapter;
-    private List<User> workmates;
 
     WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
     PlacesMgr placesMgr = PlacesMgr.getInstance();
+    private List<User> workmates;
+    private String placeId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,31 +59,13 @@ public class DetailActivity extends BaseActivity {
 
         //Retrieve Place ID
         Intent intent = getIntent();
-        final String placeId = intent.getStringExtra("PLACE_ID");
+        placeId = intent.getStringExtra("PLACE_ID");
 
         this.configureToolBar();
         this.configureRecyclerView();
 
         getRestaurantDetails(placeId);
         getWorkmatesGoing(placeId);
-
-        likeBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast.makeText(getApplication(), "Like Button clicked", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        phoneBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast.makeText(getApplication(), "Phone Button clicked", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        websiteBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast.makeText(getApplication(), "Website Button clicked", Toast.LENGTH_LONG).show();
-            }
-        });
 
         selectRestoFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,6 +158,35 @@ public class DetailActivity extends BaseActivity {
         workmates.clear();
         workmates.addAll(users);
         adapter.notifyDataSetChanged();
+    }
+
+
+    //-------------------------
+    // ACTIONS
+    //-------------------------
+
+    @OnClick(R.id.activity_detail_like_btn)
+    public void onClickLikeButton() {
+        Toast.makeText(getApplication(), "Like Button clicked", Toast.LENGTH_LONG).show();
+    }
+
+    @OnClick(R.id.activity_detail_phone_btn)
+    public void onClickPhoneButton() {
+        Toast.makeText(getApplication(), "Phone Button clicked", Toast.LENGTH_LONG).show();
+    }
+
+    @OnClick(R.id.activity_detail_website_btn)
+    public void onClickWebsiteButton() {
+        Toast.makeText(getApplication(), "Website Button clicked", Toast.LENGTH_LONG).show();
+    }
+
+    @OnClick(R.id.activity_detail_select_resto_fab)
+    public void onClickSelectRestoButton() {
+        if (getCurrentUser() != null){
+            UserHelper.updateSelectedRestoId(placeId, getCurrentUser().getUid())
+                    .addOnFailureListener(onFailureListener());
+        }
+        Toast.makeText(getApplication(), "Resto selected : " + placeId, Toast.LENGTH_LONG).show();
     }
 
 }
