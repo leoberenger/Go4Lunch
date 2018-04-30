@@ -120,13 +120,14 @@ public class DetailActivity extends AppCompatActivity {
             this.mDisposable.dispose();
     }
 
-    private void executeHttpRequestWithRetrofit(String placeId){
+    private void executeHttpRequestWithRetrofit(final String placeId){
+        Log.e("DetAct execHttp", "placeID=" + placeId);
         this.mDisposable = GMPlacesStreams.streamFetchRestaurant(placeId)
                 .subscribeWith(new DisposableObserver<PlacesAPI>(){
                     @Override
-                    public void onNext(final PlacesAPI place) {
+                    public void onNext(PlacesAPI place) {
                         Log.e("DetailActivity", "On Next");
-                        showRestaurantDetails(place);
+                        showRestaurantDetails(place.getResult());
                     }
 
                     @Override
@@ -146,9 +147,9 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
-    private void showRestaurantDetails(PlacesAPI place){
-        mTextViewName.setText(place.getResult().getName());
-        String typeAndAddress = place.getResult().getTypes().get(0) + " restaurant - " + place.getResult().getFormattedAddress();
+    private void showRestaurantDetails(PlacesAPI.Result place){
+        mTextViewName.setText(place.getName());
+        String typeAndAddress = place.getTypes().get(0) + " restaurant - " + place.getFormattedAddress();
         mTextViewTypeAndAddress.setText(typeAndAddress);
         headerImg.setImageResource(R.drawable.blurred_restaurant);
     }
