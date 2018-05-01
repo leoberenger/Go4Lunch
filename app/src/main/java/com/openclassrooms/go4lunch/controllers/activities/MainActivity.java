@@ -293,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements
             placesMgr.executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>(){
                 @Override
                 public void onNext(PlacesAPI place) {
+                    Log.e("Main Activity", "Request status : " + place.getStatus());
                     Log.e("DetailActivity", "On Next");
                     nearbyRestaurants.add(place.getResult());
                     Log.e("MainAct onNextonNext", "added place = " + place.getResult().getName());

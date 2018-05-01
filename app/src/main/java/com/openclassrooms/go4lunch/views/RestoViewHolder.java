@@ -18,11 +18,14 @@ import butterknife.ButterKnife;
  */
 
 public class RestoViewHolder extends RecyclerView.ViewHolder{
-    @BindView(R.id.resto_recycler_view_item_name)
-    TextView mTitle;
-    @BindView(R.id.resto_recycler_view_item_img)
-    ImageView mImage;
+    @BindView(R.id.resto_recycler_view_item_name) TextView mName;
+    @BindView(R.id.resto_recycler_view_item_img) ImageView mImage;
     @BindView(R.id.resto_recycler_view_item_nb_workmates)TextView mNbWorkmates;
+    @BindView(R.id.resto_recycler_view_item_address) TextView mAddress;
+    @BindView(R.id.resto_recycler_view_item_distance) TextView mDistance;
+    @BindView(R.id.resto_recycler_view_item_opening_hours) TextView mOpeningHours;
+
+
 
     WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
 
@@ -33,7 +36,7 @@ public class RestoViewHolder extends RecyclerView.ViewHolder{
 
 
     public void updateWithRestaurant(PlacesAPI.Result result, RequestManager glide){
-        this.mTitle.setText(result.getName());
+        this.mName.setText(result.getName());
 
         int nbWorkmatesGoingToThisRestaurant = workmatesMgr.getNbWorkmatesGoing(result.getPlaceId());
         String nbWorkmates = "(" + String.valueOf(nbWorkmatesGoingToThisRestaurant) + ")";
