@@ -1,6 +1,7 @@
 package com.openclassrooms.go4lunch.controllers.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,6 +52,7 @@ public class DetailActivity extends BaseActivity {
     private List<User> workmates;
     private String placeId;
     private String placeName;
+    private PlacesAPI.Result place;
 
 
     @Override
@@ -135,7 +137,7 @@ public class DetailActivity extends BaseActivity {
     //-------------------------
 
     private void showRestaurantDetails(){
-        PlacesAPI.Result place = placesMgr.getRestaurant();
+        place = placesMgr.getRestaurant();
 
         mTextViewName.setText(place.getName());
         String typeAndAddress = place.getTypes().get(0) + " restaurant - " + place.getFormattedAddress();
@@ -161,7 +163,11 @@ public class DetailActivity extends BaseActivity {
 
     @OnClick(R.id.activity_detail_phone_btn)
     public void onClickPhoneButton() {
-        Toast.makeText(getApplication(), "Phone Button clicked", Toast.LENGTH_LONG).show();
+        String phoneNumber = "tel:" + place.getInternationalPhoneNumber();
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        callIntent.setData(Uri.parse(phoneNumber));
+        startActivity(callIntent);
+
     }
 
     @OnClick(R.id.activity_detail_website_btn)
