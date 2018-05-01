@@ -42,6 +42,10 @@ public class DetailActivity extends BaseActivity {
     @BindView(R.id.activity_detail_header_image) ImageView headerImg;
     @BindView(R.id.activity_detail_toolbar) Toolbar toolbar;
     @BindView(R.id.activity_detail_select_resto_fab) FloatingActionButton selectRestoFab;
+    @BindView(R.id.activity_detail_star_1) ImageView star1;
+    @BindView(R.id.activity_detail_star_2) ImageView star2;
+    @BindView(R.id.activity_detail_star_3) ImageView star3;
+
 
     //RECYCLER VIEW
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
@@ -139,9 +143,35 @@ public class DetailActivity extends BaseActivity {
     private void showRestaurantDetails(){
         place = placesMgr.getRestaurant();
 
+        if(place.getRating() != null){
+            double rating = place.getRating();
+            int nbStars = (int)(((rating)/5)*3);
+
+            switch (nbStars){
+                case 1:
+                    star1.setVisibility(View.VISIBLE);
+                    break;
+                case 2:
+                    star1.setVisibility(View.VISIBLE);
+                    star2.setVisibility(View.VISIBLE);
+                    break;
+                case 3:
+                    star1.setVisibility(View.VISIBLE);
+                    star2.setVisibility(View.VISIBLE);
+                    star3.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    break;
+            }
+        }else{
+            Toast.makeText(getApplication(), "No rating available", Toast.LENGTH_LONG).show();
+        }
+
         mTextViewName.setText(place.getName());
+
         String typeAndAddress = place.getTypes().get(0) + " restaurant - " + place.getFormattedAddress();
         mTextViewTypeAndAddress.setText(typeAndAddress);
+
         headerImg.setImageResource(R.drawable.blurred_restaurant);
     }
 
@@ -158,7 +188,14 @@ public class DetailActivity extends BaseActivity {
 
     @OnClick(R.id.activity_detail_like_btn)
     public void onClickLikeButton() {
-        Toast.makeText(getApplication(), "Like Button clicked", Toast.LENGTH_LONG).show();
+        String restoLikeUrl = place.getUrl();
+        if(restoLikeUrl == null){
+            Toast.makeText(getApplication(), "Liking not possible", Toast.LENGTH_LONG).show();
+        }else{
+            Intent intent = new Intent(this, WebviewActivity.class);
+            intent.putExtra("EXTRA_WEBSITE_URL", restoLikeUrl);
+            startActivity(intent);
+        }
     }
 
     @OnClick(R.id.activity_detail_phone_btn)
@@ -172,7 +209,15 @@ public class DetailActivity extends BaseActivity {
 
     @OnClick(R.id.activity_detail_website_btn)
     public void onClickWebsiteButton() {
-        Toast.makeText(getApplication(), "Website Button clicked", Toast.LENGTH_LONG).show();
+        String websiteUrl = place.getWebsite();
+        if(websiteUrl == null){
+            Toast.makeText(getApplication(), "No website", Toast.LENGTH_LONG).show();
+        }else{
+            Intent intent = new Intent(this, WebviewActivity.class);
+            intent.putExtra("EXTRA_WEBSITE_URL", websiteUrl);
+            startActivity(intent);
+            Log.e("DetAct", "website : " + websiteUrl);
+        }
     }
 
     @OnClick(R.id.activity_detail_select_resto_fab)
