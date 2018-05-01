@@ -1,6 +1,7 @@
 package com.openclassrooms.go4lunch.controllers.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.openclassrooms.go4lunch.controllers.activities.base.BaseActivity;
 import java.util.Arrays;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity {
@@ -26,6 +28,14 @@ public class LoginActivity extends BaseActivity {
 
     //FOR DATA
     private static final int RC_SIGN_IN = 123;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (this.isCurrentUserLogged()){
+            this.startMainActivity();
+        }
+    }
 
     @Override
     public int getFragmentLayout() { return R.layout.activity_login; }
@@ -108,7 +118,9 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void updateUIWhenResuming(){
-        this.buttonLogin.setText(this.isCurrentUserLogged() ? getString(R.string.button_login_text_logged) : getString(R.string.button_login_text_not_logged));
+        this.buttonLogin.setText(this.isCurrentUserLogged() ?
+                getString(R.string.button_login_text_logged) :
+                getString(R.string.button_login_text_not_logged));
     }
 
     // --------------------
@@ -129,8 +141,8 @@ public class LoginActivity extends BaseActivity {
                     showSnackBar(this.coordinatorLayout, getString(R.string.error_unknown_error));
                 }
             }else{ // SUCCESS
-                showSnackBar(this.coordinatorLayout, getString(R.string.connection_succeed));
                 this.createUserInFirestore();
+                startMainActivity();
             }
         }
     }
