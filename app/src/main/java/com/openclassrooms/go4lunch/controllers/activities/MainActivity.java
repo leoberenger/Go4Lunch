@@ -3,6 +3,7 @@ package com.openclassrooms.go4lunch.controllers.activities;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -20,9 +21,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -72,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+
 
     //FOR HTTP REQUEST
     private Disposable mDisposable;
@@ -200,6 +206,26 @@ public class MainActivity extends AppCompatActivity implements
     private void configureNavigationView(){
         this.navigationView = (NavigationView) findViewById(R.id.activity_main_nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        String userName = getCurrentUser().getDisplayName();
+        String userEmail = getCurrentUser().getEmail();
+        Uri userPhotoUrl = getCurrentUser().getPhotoUrl();
+
+        Log.e("MainAct configNavView", "username = " + userName);
+        Log.e("MainAct configNavView", "user email = " + userEmail);
+        Log.e("MainAct configNavView", "user photoUrl = " + userPhotoUrl);
+
+        View hView =  navigationView.getHeaderView(0);
+        ImageView nav_picture = (ImageView)hView.findViewById(R.id.nav_header_profile_img);
+        TextView nav_user = (TextView)hView.findViewById(R.id.nav_header_username);
+        TextView nav_email = (TextView)hView.findViewById(R.id.nav_header_user_email);
+
+        Glide.with(getApplicationContext())
+                .load(userPhotoUrl)
+                .into(nav_picture);
+        //glide.load().into(nav_picture);
+        nav_user.setText(userName);
+        nav_email.setText(userEmail);
     }
 
     private void configureBottomNavigation(BottomNavigationView btmNav){
