@@ -1,5 +1,6 @@
 package com.openclassrooms.go4lunch.managers;
 
+import android.location.Location;
 import android.util.Log;
 
 import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
@@ -15,6 +16,7 @@ public class PlacesMgr {
     private static final PlacesMgr ourInstance = new PlacesMgr();
     private PlacesAPI.Result mRestaurant;
     private List<PlacesAPI.Result> mNearbyRestaurants;
+    private Location currentLocation;
     private Disposable mDisposable;
 
 
@@ -33,6 +35,10 @@ public class PlacesMgr {
         return mRestaurant;
     }
 
+    public Location getCurrentLocation() {
+        return currentLocation;
+    }
+
     public List<PlacesAPI.Result> getNearbyRestaurants() {
         return mNearbyRestaurants;
     }
@@ -43,6 +49,10 @@ public class PlacesMgr {
 
     public void setRestaurant(PlacesAPI.Result restaurant) {
         mRestaurant = restaurant;
+    }
+
+    public void setCurrentLocation(Location currentLocation) {
+        this.currentLocation = currentLocation;
     }
 
     public void setNearbyRestaurants(List<PlacesAPI.Result> nearbyRestaurants) {

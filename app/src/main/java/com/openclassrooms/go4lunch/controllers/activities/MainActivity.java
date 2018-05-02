@@ -288,7 +288,8 @@ public class MainActivity extends AppCompatActivity implements
     private void setNearbyRestaurantsList(PlacesAPI places){
         final List<PlacesAPI.Result> nearbyRestaurants = new ArrayList<>();
 
-        for(int i = 0; i<places.getResults().size(); i++){
+        //for(int i = 0; i<places.getResults().size(); i++){
+        for(int i = 0; i<2; i++){
             placeId = places.getResults().get(i).getPlaceId();
             placesMgr.executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>(){
                 @Override
@@ -296,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements
                     Log.e("Main Activity", "Request status : " + place.getStatus());
                     Log.e("DetailActivity", "On Next");
                     nearbyRestaurants.add(place.getResult());
-                    Log.e("MainAct onNextonNext", "added place = " + place.getResult().getName());
+                    Log.e("MainAct onNext", "added place = " + place.getResult().getName());
                 }
 
                 @Override
@@ -378,6 +379,7 @@ public class MainActivity extends AppCompatActivity implements
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
 
+                            placesMgr.setCurrentLocation(mLastKnownLocation);
                             getNearbyRestaurants(mLastKnownLocation);
 
                         } else {
@@ -425,7 +427,8 @@ public class MainActivity extends AppCompatActivity implements
     private void showRestaurantsOnMapWithMarkers(PlacesAPI results){
         mMap.clear();
         // This loop will go through all the results and add marker on each location.
-        for (int i = 0; i < results.getResults().size(); i++) {
+        //for (int i = 0; i < results.getResults().size(); i++) {
+        for (int i = 0; i < 2; i++) {
 
             PlacesAPI.Result restaurant = results.getResults().get(i);
 
