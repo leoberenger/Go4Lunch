@@ -438,11 +438,9 @@ public class MainActivity extends AppCompatActivity implements
             String tag = restaurant.getPlaceId();
 
             int workmates = workmatesMgr.getNbWorkmatesGoing(restaurant.getPlaceId());
-
             float hue = (workmates != 0)?
                             BitmapDescriptorFactory.HUE_GREEN:
                             BitmapDescriptorFactory.HUE_ORANGE;
-
 
             mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(lat, lng))

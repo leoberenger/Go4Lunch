@@ -30,7 +30,7 @@ public class WorkmatesMgr {
         int nbWorkmates = 0;
 
         for(int i = 0; i<workmates.size(); i++){
-            if (workmates.get(i).getSelectedRestoId().equals(placeId)){
+            if ((workmates.get(i).getSelectedRestoId() != null) && (workmates.get(i).getSelectedRestoId().equals(placeId))) {
                 nbWorkmates++;
             }
         }
