@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.evernote.android.job.JobManager;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.apis.UserHelper;
 import com.openclassrooms.go4lunch.controllers.activities.base.BaseActivity;
@@ -22,6 +23,8 @@ import com.openclassrooms.go4lunch.managers.PlacesMgr;
 import com.openclassrooms.go4lunch.managers.WorkmatesMgr;
 import com.openclassrooms.go4lunch.models.User;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
+import com.openclassrooms.go4lunch.notifications.MyJobCreator;
+import com.openclassrooms.go4lunch.notifications.NotificationJob;
 import com.openclassrooms.go4lunch.views.WorkmatesRecyclerAdapter;
 
 import java.util.ArrayList;
@@ -228,8 +231,16 @@ public class DetailActivity extends BaseActivity {
 
             UserHelper.updateSelectedRestoName(placeName, getCurrentUser().getUid())
                     .addOnFailureListener(onFailureListener());
+
+            createJob(placeId);
         }
         Toast.makeText(getApplication(), "Resto selected : " + placeName, Toast.LENGTH_LONG).show();
+    }
+
+    private void createJob(String placeId){
+        JobManager.create(getApplicationContext())
+                .addJobCreator(new MyJobCreator());
+        NotificationJob.showAtNoon(placeId);
     }
 
 }
