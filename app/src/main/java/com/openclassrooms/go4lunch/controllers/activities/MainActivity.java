@@ -29,8 +29,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -140,6 +144,24 @@ public class MainActivity extends AppCompatActivity implements
 
         //Set Workmates list
         setWorkmatesList();
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
     }
 
     @Override
@@ -288,8 +310,7 @@ public class MainActivity extends AppCompatActivity implements
     private void setNearbyRestaurantsList(PlacesAPI places){
         final List<PlacesAPI.Result> nearbyRestaurants = new ArrayList<>();
 
-        //for(int i = 0; i<places.getResults().size(); i++){
-        for(int i = 0; i<2; i++){
+        for(int i = 0; i<places.getResults().size(); i++){
             placeId = places.getResults().get(i).getPlaceId();
             placesMgr.executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>(){
                 @Override
@@ -427,8 +448,7 @@ public class MainActivity extends AppCompatActivity implements
     private void showRestaurantsOnMapWithMarkers(PlacesAPI results){
         mMap.clear();
         // This loop will go through all the results and add marker on each location.
-        //for (int i = 0; i < results.getResults().size(); i++) {
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < results.getResults().size(); i++) {
 
             PlacesAPI.Result restaurant = results.getResults().get(i);
 

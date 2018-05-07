@@ -36,6 +36,7 @@ public class RestoViewHolder extends RecyclerView.ViewHolder{
 
     WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
     PlacesMgr placesMgr = PlacesMgr.getInstance();
+    String APIKEY = "AIzaSyCQo0hGB4Wbb7r59_vuqQ5Aksk6MM8_St0";
 
     public RestoViewHolder(View itemView){
         super(itemView);
@@ -49,8 +50,10 @@ public class RestoViewHolder extends RecyclerView.ViewHolder{
         String typeAndAddress = result.getTypes().get(0) + " - " + result.getFormattedAddress();
         this.mAddress.setText(typeAndAddress);
 
-        String openingHours = (result.getOpeningHours().getOpenNow())? "Open" : "Closed";
-        this.mOpeningHours.setText(openingHours);
+        if((result.getOpeningHours() !=null) && (result.getOpeningHours().getOpenNow() != null)){
+            String openingHours = (result.getOpeningHours().getOpenNow())? "Open" : "Closed";
+            this.mOpeningHours.setText(openingHours);
+        }
 
         Location currentLocation = placesMgr.getCurrentLocation();
         Double currentLng = currentLocation.getLongitude();
@@ -87,11 +90,13 @@ public class RestoViewHolder extends RecyclerView.ViewHolder{
             }
         }
 
-        String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference="
-                + result.getPhotos().get(0).getPhotoReference()
-                + "&key=AIzaSyAh9AJj4r9pgwUL86nz1pCX6DVpHf9T5PE";
+        if((result.getPhotos() != null)&& (result.getPhotos().get(0)!=null)){
+            String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference="
+                    + result.getPhotos().get(0).getPhotoReference()
+                    + "&key=" + APIKEY;
 
-        glide.load(photoUrl).into(mImage);
+            glide.load(photoUrl).into(mImage);
+        }
     }
 
     public static int getDistance(double startLati, double startLongi, double goalLati, double goalLongi){

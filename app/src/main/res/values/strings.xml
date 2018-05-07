@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Go4Lunch</string>
 
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAmk4QgOp3UC-sQJOWPZTlgUy37aNl5-WQ</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCQo0hGB4Wbb7r59_vuqQ5Aksk6MM8_St0</string>
 
     <!--    Permissions    -->
     <string name="permission_rationale_location">Access to the location service is required</string>

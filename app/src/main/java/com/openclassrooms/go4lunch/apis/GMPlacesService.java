@@ -16,7 +16,7 @@ import retrofit2.http.Query;
 
 interface GMPlacesService {
 
-    String apiKey = "key=AIzaSyAmk4QgOp3UC-sQJOWPZTlgUy37aNl5-WQ";
+    String apiKey = "key=AIzaSyCQo0hGB4Wbb7r59_vuqQ5Aksk6MM8_St0";
 
     @GET("nearbysearch/json?" + apiKey)
     Observable<PlacesAPI> getPlaces(
