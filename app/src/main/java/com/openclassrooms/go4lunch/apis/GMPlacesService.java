@@ -1,6 +1,7 @@
 package com.openclassrooms.go4lunch.apis;
 
 
+import com.openclassrooms.go4lunch.models.googlemaps.AutocompleteAPI;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import io.reactivex.Observable;
@@ -22,6 +23,15 @@ interface GMPlacesService {
     Observable<PlacesAPI> getPlaces(
             @Query("location") String location,
             @Query("type") String type,
+            @Query("radius") int radius
+    );
+
+
+    @GET("autocomplete/json?" + apiKey)
+    Observable<AutocompleteAPI> getSearchedPlaces(
+            @Query("input") String input,
+            @Query("types") String types,
+            @Query("location") String location,
             @Query("radius") int radius
     );
 

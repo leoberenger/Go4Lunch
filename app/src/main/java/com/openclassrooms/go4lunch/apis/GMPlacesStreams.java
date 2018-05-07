@@ -1,6 +1,7 @@
 package com.openclassrooms.go4lunch.apis;
 
 
+import com.openclassrooms.go4lunch.models.googlemaps.AutocompleteAPI;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import java.util.concurrent.TimeUnit;
@@ -18,6 +19,14 @@ public class GMPlacesStreams {
     public static Observable<PlacesAPI> streamFetchNearbyRestaurants(String location){
         GMPlacesService service = GMPlacesService.retrofit.create(GMPlacesService.class);
         return service.getPlaces(location, "restaurant", 1000)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(10, TimeUnit.SECONDS);
+    }
+
+    public static Observable<AutocompleteAPI> streamFetchSearchedRestaurants(String input, String location){
+        GMPlacesService service = GMPlacesService.retrofit.create(GMPlacesService.class);
+        return service.getSearchedPlaces(input, "establishment", location,1000)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);

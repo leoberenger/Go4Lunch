@@ -63,8 +63,10 @@ public class PlacesMgr {
     // REQUESTS
     // --------------------------
 
-    public void executeHttpRequestToFindNearbyRestaurants(String position, DisposableObserver<PlacesAPI> observer){
-        Log.e("MainActivity Request", "position = " + position);
+    public void executeHttpRequestToFindNearbyRestaurants(DisposableObserver<PlacesAPI> observer){
+
+        String position = getCurrentLocation().getLatitude() + "," + getCurrentLocation().getLongitude();
+
         this.mDisposable = GMPlacesStreams.streamFetchNearbyRestaurants(position)
                 .subscribeWith(observer);
     }

@@ -18,9 +18,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -59,6 +62,7 @@ import com.openclassrooms.go4lunch.controllers.fragments.WorkmatesListFragment;
 import com.openclassrooms.go4lunch.managers.PlacesMgr;
 import com.openclassrooms.go4lunch.managers.WorkmatesMgr;
 import com.openclassrooms.go4lunch.models.User;
+import com.openclassrooms.go4lunch.models.googlemaps.AutocompleteAPI;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 import com.openclassrooms.go4lunch.controllers.fragments.RestoListFragment;
 
@@ -75,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements
         GoogleMap.OnInfoWindowClickListener{
 
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigation;
+    @BindView(R.id.activity_main_search) EditText searchBar;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -133,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         this.configureToolBar();
+        this.configureSearchBar();
         this.configureDrawerLayout();
         this.configureNavigationView();
         this.configureBottomNavigation(bottomNavigation);
@@ -145,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements
 
         //Set Workmates list
         setWorkmatesList();
-
     }
 
     @Override
@@ -200,6 +205,29 @@ public class MainActivity extends AppCompatActivity implements
     private void configureToolBar(){
         this.toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
         setSupportActionBar(toolbar);
+    }
+
+    private void configureSearchBar(){
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String text = s.toString();
+                Log.e("MainActivity onTxtChang", "text =" + text);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+
     }
 
     private void configureDrawerLayout(){
@@ -269,15 +297,15 @@ public class MainActivity extends AppCompatActivity implements
     // SET DATA
     // -----------------
 
-    private void getNearbyRestaurants(Location mLastKnownLocation){
+    private void getNearbyRestaurants(){
         //Get Nearby Restaurants
-        String currentPosition = mLastKnownLocation.getLatitude() + ", " + + mLastKnownLocation.getLongitude();
-        placesMgr.executeHttpRequestToFindNearbyRestaurants(currentPosition, new DisposableObserver<PlacesAPI>(){
+        placesMgr.executeHttpRequestToFindNearbyRestaurants(new DisposableObserver<PlacesAPI>(){
             @Override
             public void onNext(PlacesAPI places) {
                 Log.e("MapsActivity", "On Next");
 
                 setNearbyRestaurantsList(places);
+
                 showRestaurantsOnMapWithMarkers(places);
             }
             @Override
@@ -333,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
                     workmatesMgr.setWorkmates(workmates);
+
                 } else {
                     Log.e("MainActivit getAllUsers", "Error getting documents: ", task.getException());
                 }
@@ -385,7 +414,8 @@ public class MainActivity extends AppCompatActivity implements
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
 
                             placesMgr.setCurrentLocation(mLastKnownLocation);
-                            getNearbyRestaurants(mLastKnownLocation);
+
+                            getNearbyRestaurants();
 
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
