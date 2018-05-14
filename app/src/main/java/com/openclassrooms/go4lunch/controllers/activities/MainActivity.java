@@ -312,12 +312,7 @@ public class MainActivity extends AppCompatActivity implements
                     showRestaurantOnMapWithMarker(places.getResults().get(i));
                     placesIds[i] = places.getResults().get(i).getPlaceId();
                 }
-
                 setNearbyRestaurantsList(placesIds);
-
-
-
-
 
             }
             @Override
@@ -342,9 +337,12 @@ public class MainActivity extends AppCompatActivity implements
             public void onNext(AutocompleteAPI places) {
                 Log.e("MA getSearchedResto", "On Next");
 
+                String [] placesIds = new String[places.getPredictions().size()];
+
                 for (int i = 0; i<places.getPredictions().size(); i++){
-                    String placeId = places.getPredictions().get(i).getPlaceId();
-                    placesMgr.executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>() {
+                    placesIds[i] = places.getPredictions().get(i).getPlaceId();
+
+                    placesMgr.executeHttpRequestToGetRestaurantDetails(placesIds[i], new DisposableObserver<PlacesAPI>() {
                         @Override
                         public void onNext(PlacesAPI placesAPI) {
                             showRestaurantOnMapWithMarker(placesAPI.getResult());
@@ -357,7 +355,9 @@ public class MainActivity extends AppCompatActivity implements
                         public void onComplete() {}
                     });
                 }
+                setNearbyRestaurantsList(placesIds);
             }
+
             @Override
             public void onError(Throwable e) {
                 Log.e("MA getSearchedResto", "On Error"+Log.getStackTraceString(e));
