@@ -216,8 +216,9 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String text = s.toString();
-                Log.e("MainActivity onTxtChang", "text =" + text);
+                final String text = s.toString();
+                mMap.clear();
+                getSearchedRestaurants(text);
             }
 
             @Override
@@ -298,7 +299,6 @@ public class MainActivity extends AppCompatActivity implements
     // -----------------
 
     private void getNearbyRestaurants(){
-        //Get Nearby Restaurants
         placesMgr.executeHttpRequestToFindNearbyRestaurants(new DisposableObserver<PlacesAPI>(){
             @Override
             public void onNext(PlacesAPI places) {
@@ -306,7 +306,11 @@ public class MainActivity extends AppCompatActivity implements
 
                 setNearbyRestaurantsList(places);
 
-                showRestaurantsOnMapWithMarkers(places);
+                mMap.clear();
+
+                for (int i = 0; i < places.getResults().size(); i++){
+                    showRestaurantOnMapWithMarker(places.getResults().get(i));
+                }
             }
             @Override
             public void onError(Throwable e) {
@@ -319,6 +323,42 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+
+    private void getSearchedRestaurants(String search){
+
+        mMap.clear();
+
+        placesMgr.executeHttpRequestToFindSearchedRestaurants(search, new DisposableObserver<AutocompleteAPI>(){
+
+            @Override
+            public void onNext(AutocompleteAPI places) {
+                Log.e("MA getSearchedResto", "On Next");
+
+                for (int i = 0; i<places.getPredictions().size(); i++){
+                    String placeId = places.getPredictions().get(i).getPlaceId();
+                    placesMgr.executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>() {
+                        @Override
+                        public void onNext(PlacesAPI placesAPI) {
+                            showRestaurantOnMapWithMarker(placesAPI.getResult());
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {}
+
+                        @Override
+                        public void onComplete() {}
+                    });
+                }
+            }
+            @Override
+            public void onError(Throwable e) {
+                Log.e("MA getSearchedResto", "On Error"+Log.getStackTraceString(e));
+            }
+            @Override
+            public void onComplete() {}
+        });
+    }
+
     private void setNearbyRestaurantsList(PlacesAPI places){
         final List<PlacesAPI.Result> nearbyRestaurants = new ArrayList<>();
 
@@ -327,10 +367,8 @@ public class MainActivity extends AppCompatActivity implements
             placesMgr.executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>(){
                 @Override
                 public void onNext(PlacesAPI place) {
-                    Log.e("Main Activity", "Request status : " + place.getStatus());
                     Log.e("DetailActivity", "On Next");
                     nearbyRestaurants.add(place.getResult());
-                    Log.e("MainAct onNext", "added place = " + place.getResult().getName());
                 }
 
                 @Override
@@ -458,13 +496,18 @@ public class MainActivity extends AppCompatActivity implements
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(0, 0, 30, 100);
     }
-
-    private void showRestaurantsOnMapWithMarkers(PlacesAPI results){
+/*
+    private void showRestaurantsOnMapWithMarkers(List<PlacesAPI.Result> results){
         mMap.clear();
-        // This loop will go through all the results and add marker on each location.
-        for (int i = 0; i < results.getResults().size(); i++) {
 
-            PlacesAPI.Result restaurant = results.getResults().get(i);
+        for(int i = 0; i<results.size(); i++) {
+            Log.e("MA showRestoOnMap", "result " + i + " = " + results.get(i).getName());
+        }
+
+        // This loop will go through all the results and add marker on each location.
+        for (int i = 0; i < results.size(); i++) {
+
+            PlacesAPI.Result restaurant = results.get(i);
 
             Double lat = restaurant.getGeometry().getLocation().getLat();
             Double lng = restaurant.getGeometry().getLocation().getLng();
@@ -482,6 +525,25 @@ public class MainActivity extends AppCompatActivity implements
                     .icon(BitmapDescriptorFactory.defaultMarker(hue)))
                     .setTag(tag);
         }
+    }
+*/
+    private void showRestaurantOnMapWithMarker(PlacesAPI.Result restaurant){
+
+            Double lat = restaurant.getGeometry().getLocation().getLat();
+            Double lng = restaurant.getGeometry().getLocation().getLng();
+            String name = restaurant.getName();
+            String tag = restaurant.getPlaceId();
+
+            int workmates = workmatesMgr.getNbWorkmatesGoing(restaurant.getPlaceId());
+            float hue = (workmates != 0)?
+                    BitmapDescriptorFactory.HUE_GREEN:
+                    BitmapDescriptorFactory.HUE_ORANGE;
+
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(lat, lng))
+                    .title(name)
+                    .icon(BitmapDescriptorFactory.defaultMarker(hue)))
+                    .setTag(tag);
     }
 
     // --------------------------

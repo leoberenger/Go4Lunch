@@ -66,7 +66,7 @@
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb2071780099763574</string>
 
     <!-- TWITTER PURPOSE -->
-    <string name="twitter_consumer_key" translatable="false">5hOInEl4se2tBwGOCvSg8ydXo</string>
+    <string name="twitter_consumer_key" translatable="false"> 5hOInEl4se2tBwGOCvSg8ydXo</string>
     <string name="twitter_consumer_secret" translatable="false">UWJ9zwJPG4mtyfXakWEZhae7T8Gkg9FDl5eOxLhu5igvPnD3P7</string>
 
 </resources>

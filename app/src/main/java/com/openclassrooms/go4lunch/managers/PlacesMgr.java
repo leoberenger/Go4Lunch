@@ -4,6 +4,7 @@ import android.location.Location;
 import android.util.Log;
 
 import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
+import com.openclassrooms.go4lunch.models.googlemaps.AutocompleteAPI;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import java.util.List;
@@ -16,6 +17,16 @@ public class PlacesMgr {
     private static final PlacesMgr ourInstance = new PlacesMgr();
     private PlacesAPI.Result mRestaurant;
     private List<PlacesAPI.Result> mNearbyRestaurants;
+
+    public String[] getPlaceIds() {
+        return placeIds;
+    }
+
+    public void setPlaceIds(String[] placeIds) {
+        this.placeIds = placeIds;
+    }
+
+    private String [] placeIds;
     private Location currentLocation;
     private Disposable mDisposable;
 
@@ -68,6 +79,14 @@ public class PlacesMgr {
         String position = getCurrentLocation().getLatitude() + "," + getCurrentLocation().getLongitude();
 
         this.mDisposable = GMPlacesStreams.streamFetchNearbyRestaurants(position)
+                .subscribeWith(observer);
+    }
+
+    public void executeHttpRequestToFindSearchedRestaurants(String input, DisposableObserver<AutocompleteAPI> observer){
+
+        String position = getCurrentLocation().getLatitude() + "," + getCurrentLocation().getLongitude();
+
+        this.mDisposable = GMPlacesStreams.streamFetchSearchedRestaurants(input, position)
                 .subscribeWith(observer);
     }
 
