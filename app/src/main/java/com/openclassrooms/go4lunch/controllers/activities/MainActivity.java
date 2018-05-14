@@ -304,13 +304,21 @@ public class MainActivity extends AppCompatActivity implements
             public void onNext(PlacesAPI places) {
                 Log.e("MapsActivity", "On Next");
 
-                setNearbyRestaurantsList(places);
-
                 mMap.clear();
 
-                for (int i = 0; i < places.getResults().size(); i++){
+                String [] placesIds = new String[places.getResults().size()];
+
+                for(int i = 0; i<places.getResults().size(); i++){
                     showRestaurantOnMapWithMarker(places.getResults().get(i));
+                    placesIds[i] = places.getResults().get(i).getPlaceId();
                 }
+
+                setNearbyRestaurantsList(placesIds);
+
+
+
+
+
             }
             @Override
             public void onError(Throwable e) {
@@ -359,12 +367,12 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private void setNearbyRestaurantsList(PlacesAPI places){
+    private void setNearbyRestaurantsList(String [] placesIds){
         final List<PlacesAPI.Result> nearbyRestaurants = new ArrayList<>();
 
-        for(int i = 0; i<places.getResults().size(); i++){
-            placeId = places.getResults().get(i).getPlaceId();
-            placesMgr.executeHttpRequestToGetRestaurantDetails(placeId, new DisposableObserver<PlacesAPI>(){
+        for(int i = 0; i<placesIds.length; i++){
+
+            placesMgr.executeHttpRequestToGetRestaurantDetails(placesIds[i], new DisposableObserver<PlacesAPI>(){
                 @Override
                 public void onNext(PlacesAPI place) {
                     Log.e("DetailActivity", "On Next");
