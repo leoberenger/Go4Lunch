@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Go4Lunch</string>
+    <string name="map">Carte</string>
+    <string name="resto_list">Liste</string>
+    <string name="workmates_list">Collègues</string>
+    <string name="restaurant">Votre repas</string>
+    <string name="settings">Paramètres</string>
+    <string name="logout">Déconnexion</string>
+    <string name="navigation_drawer_open">Ouvrir la navigation</string>
+    <string name="navigation_drawer_close">Fermer la navigation</string>
+    <string name="search_title">Chercher un restaurant</string>
+    <string name="permission_rationale_location">Accès requis au service de localisation</string>
+    <string name="location_permission_denied">Service de géolocalisation refusé</string>
+    <string name="permission_required_toast">Permission de géolocalisation requis</string>
+    <string name="title_activity_maps">Détails sur la position actuelle</string>
+    <string name="default_info_title">Position par défaut</string>
+    <string name="default_info_snippet">Aucune place trouvée, car la permission de géolocalisation est désactivée</string>
+    <string name="option_get_place">Trouver un lieu</string>
+    <string name="pick_place">Choisir un lieu</string>
+    <string name="call">APPELER</string>
+    <string name="like">AIMER</string>
+    <string name="website">SITE WEB</string>
+    <string name="main_activity_description">Trouvez un bon restaurant et invitez vos collègues pour le repas!</string>
+    <string name="login">Connexion</string>
+    <string name="error_not_connected">Vous devez d\'abord vous connecter!</string>
+    <string name="error_authentication_canceled">Authentification annulée</string>
+    <string name="error_no_internet">Aucune connexion Internet!</string>
+    <string name="error_unknown_error">Une erreur inconnue est arrivée</string>
+    <string name="connection_succeed">Authentification réussie</string>
+    <string name="button_login_text_logged">Chercher un restaurant</string>
+    <string name="button_login_text_not_logged">Connexion</string>
+    <string name="toolbar_title_login_activity">Votre profil</string>
+    <string name="text_input_username">Nom d\'utilisateur</string>
+    <string name="text_view_email">Email:</string>
+    <string name="button_update_account">Mettre à jour le nom d\'utilisateur</string>
+    <string name="button_delete_account">Supprimer mon compte</string>
+    <string name="button_sign_out_account">Déconnexion</string>
+    <string name="info_no_email_found">Aucune adresse email</string>
+    <string name="info_no_username_found">Aucun nom d\'utilisateur</string>
+    <string name="popup_message_confirmation_delete_account">Êtes-vous sûr de vouloir supprimer votre compte?</string>
+    <string name="popup_message_choice_yes">Oui!</string>
+    <string name="popup_message_choice_no">Non</string>
+    <string name="notification_title">Vous avez reçu une notification</string>
+</resources>
