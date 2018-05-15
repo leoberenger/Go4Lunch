@@ -1,5 +1,7 @@
 package com.openclassrooms.go4lunch.controllers.activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -21,11 +23,14 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements
         GoogleMap.OnInfoWindowClickListener{
 
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigation;
-    @BindView(R.id.activity_main_search) EditText searchBar;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -138,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         this.configureToolBar();
-        this.configureSearchBar();
         this.configureDrawerLayout();
         this.configureNavigationView();
         this.configureBottomNavigation(bottomNavigation);
@@ -151,7 +154,11 @@ public class MainActivity extends AppCompatActivity implements
 
         //Set Workmates list
         setWorkmatesList();
+
+        //Get Intent from Search Bar
+        handleIntent(getIntent());
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -160,6 +167,45 @@ public class MainActivity extends AppCompatActivity implements
             outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
             super.onSaveInstanceState(outState);
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        mMap.clear();
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+
+            getSearchedRestaurants(query);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                Log.e("MA searchBar", "onClose");
+                getNearbyRestaurants();
+                return false;
+            }
+        });
+
+
+        return true;
     }
 
     @Override
@@ -205,30 +251,6 @@ public class MainActivity extends AppCompatActivity implements
     private void configureToolBar(){
         this.toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
         setSupportActionBar(toolbar);
-    }
-
-    private void configureSearchBar(){
-        searchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                final String text = s.toString();
-                mMap.clear();
-                getSearchedRestaurants(text);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-
-
     }
 
     private void configureDrawerLayout(){
@@ -326,10 +348,7 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-
     private void getSearchedRestaurants(String search){
-
-        mMap.clear();
 
         placesMgr.executeHttpRequestToFindSearchedRestaurants(search, new DisposableObserver<AutocompleteAPI>(){
 
@@ -461,7 +480,13 @@ public class MainActivity extends AppCompatActivity implements
 
                             placesMgr.setCurrentLocation(mLastKnownLocation);
 
-                            getNearbyRestaurants();
+                            if(getIntent().getStringExtra(SearchManager.QUERY) == null){
+                                getNearbyRestaurants();
+                            }else{
+                                Log.e("MA getDevLoc", "intent = " + getIntent().getStringExtra(SearchManager.QUERY));
+                                String query = getIntent().getStringExtra(SearchManager.QUERY);
+                                getSearchedRestaurants(query);
+                            }
 
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
@@ -504,37 +529,7 @@ public class MainActivity extends AppCompatActivity implements
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(0, 0, 30, 100);
     }
-/*
-    private void showRestaurantsOnMapWithMarkers(List<PlacesAPI.Result> results){
-        mMap.clear();
 
-        for(int i = 0; i<results.size(); i++) {
-            Log.e("MA showRestoOnMap", "result " + i + " = " + results.get(i).getName());
-        }
-
-        // This loop will go through all the results and add marker on each location.
-        for (int i = 0; i < results.size(); i++) {
-
-            PlacesAPI.Result restaurant = results.get(i);
-
-            Double lat = restaurant.getGeometry().getLocation().getLat();
-            Double lng = restaurant.getGeometry().getLocation().getLng();
-            String name = restaurant.getName();
-            String tag = restaurant.getPlaceId();
-
-            int workmates = workmatesMgr.getNbWorkmatesGoing(restaurant.getPlaceId());
-            float hue = (workmates != 0)?
-                            BitmapDescriptorFactory.HUE_GREEN:
-                            BitmapDescriptorFactory.HUE_ORANGE;
-
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(lat, lng))
-                    .title(name)
-                    .icon(BitmapDescriptorFactory.defaultMarker(hue)))
-                    .setTag(tag);
-        }
-    }
-*/
     private void showRestaurantOnMapWithMarker(PlacesAPI.Result restaurant){
 
             Double lat = restaurant.getGeometry().getLocation().getLat();
