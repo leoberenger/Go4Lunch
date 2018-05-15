@@ -26,6 +26,7 @@ public class WorkmatesMgr {
         this.workmates = workmates;
     }
 
+
     public int getNbWorkmatesGoing(String placeId){
         int nbWorkmates = 0;
 

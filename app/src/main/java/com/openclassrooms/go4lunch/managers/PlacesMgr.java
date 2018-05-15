@@ -17,16 +17,6 @@ public class PlacesMgr {
     private static final PlacesMgr ourInstance = new PlacesMgr();
     private PlacesAPI.Result mRestaurant;
     private List<PlacesAPI.Result> mNearbyRestaurants;
-
-    public String[] getPlaceIds() {
-        return placeIds;
-    }
-
-    public void setPlaceIds(String[] placeIds) {
-        this.placeIds = placeIds;
-    }
-
-    private String [] placeIds;
     private Location currentLocation;
     private Disposable mDisposable;
 

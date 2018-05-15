@@ -39,7 +39,7 @@ public class NotificationJob extends Job {
         bundleCompat.putString("PLACE_ID", placeId);
 
         new JobRequest.Builder(NotificationJob.TAG)
-                .setExact(12_000L)
+                .setPeriodic(TimeUnit.HOURS.toMillis(12), TimeUnit.HOURS.toMillis(13))
                 .setExtras(bundleCompat)
                 .build()
                 .schedule();
