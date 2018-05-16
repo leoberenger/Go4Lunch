@@ -27,7 +27,7 @@ interface GMPlacesService {
     );
 
 
-    @GET("autocomplete/json?" + apiKey)
+    @GET("autocomplete/json?&strictbounds&" + apiKey)
     Observable<AutocompleteAPI> getSearchedPlaces(
             @Query("input") String input,
             @Query("types") String types,
