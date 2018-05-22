@@ -196,12 +196,10 @@ public class MainActivity extends AppCompatActivity implements
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                Log.e("MA searchBar", "onClose");
                 getNearbyRestaurants();
                 return false;
             }
         });
-
 
         return true;
     }
@@ -333,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements
                     placesIds[i] = places.getResults().get(i).getPlaceId();
                 }
                 setNearbyRestaurantsList(placesIds);
-
             }
             @Override
             public void onError(Throwable e) {
@@ -478,12 +475,16 @@ public class MainActivity extends AppCompatActivity implements
 
                             placesMgr.setCurrentLocation(mLastKnownLocation);
 
-                            if(getIntent().getStringExtra(SearchManager.QUERY) == null){
+                            List<PlacesAPI.Result> nearbyRestaurants = placesMgr.getNearbyRestaurants();
+
+                            if(nearbyRestaurants == null){
+                                Log.e("MA getDevLoc", "no nearby restaurant list existing");
                                 getNearbyRestaurants();
                             }else{
-                                Log.e("MA getDevLoc", "intent = " + getIntent().getStringExtra(SearchManager.QUERY));
-                                String query = getIntent().getStringExtra(SearchManager.QUERY);
-                                getSearchedRestaurants(query);
+                                for(int i = 0; i<nearbyRestaurants.size(); i++){
+                                    Log.e("MA getDevLoc", "nearby restaurant exists");
+                                    showRestaurantOnMapWithMarker(nearbyRestaurants.get(i));
+                                }
                             }
 
                         } else {
