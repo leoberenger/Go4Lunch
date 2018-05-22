@@ -154,9 +154,6 @@ public class MainActivity extends AppCompatActivity implements
 
         //Set Workmates list
         setWorkmatesList();
-
-        //Get Intent from Search Bar
-        handleIntent(getIntent());
     }
 
 
@@ -170,30 +167,31 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        mMap.clear();
-        handleIntent(intent);
-    }
-
-    private void handleIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-
-            getSearchedRestaurants(query);
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
 
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
+        final SearchView searchView =
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mMap.clear();
+                getSearchedRestaurants(query);
+                searchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
