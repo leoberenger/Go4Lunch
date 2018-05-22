@@ -20,14 +20,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
@@ -35,15 +32,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -76,7 +67,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
 public class MainActivity extends AppCompatActivity implements
@@ -94,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements
 
 
     //FOR HTTP REQUEST
-    private Disposable mDisposable;
     private String placeId;
 
     //------------------------
@@ -120,10 +109,6 @@ public class MainActivity extends AppCompatActivity implements
     private final WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
     private SupportMapFragment mapFragment = SupportMapFragment.newInstance();
 
-
-    //------------------------
-    // OVERRIDE METHODS
-    //------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements
         setWorkmatesList();
     }
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (mMap != null) {
@@ -166,23 +150,25 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+
+    //------------------------
+    // NAVIGATION
+    //------------------------
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
 
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        final SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        final SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mMap.clear();
-                getSearchedRestaurants(query);
+                getAndShowSearchedRestaurants(query);
                 searchView.clearFocus();
                 return true;
             }
@@ -196,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                getNearbyRestaurants();
+                getAndShowNearbyRestaurants();
                 return false;
             }
         });
@@ -312,11 +298,12 @@ public class MainActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
+
     // -----------------
     // SET DATA
     // -----------------
 
-    private void getNearbyRestaurants(){
+    private void getAndShowNearbyRestaurants(){
         placesMgr.executeHttpRequestToFindNearbyRestaurants(new DisposableObserver<PlacesAPI>(){
             @Override
             public void onNext(PlacesAPI places) {
@@ -330,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements
                     showRestaurantOnMapWithMarker(places.getResults().get(i));
                     placesIds[i] = places.getResults().get(i).getPlaceId();
                 }
-                setNearbyRestaurantsList(placesIds);
+                setRestaurantsList(placesIds);
             }
             @Override
             public void onError(Throwable e) {
@@ -343,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private void getSearchedRestaurants(String search){
+    private void getAndShowSearchedRestaurants(String search){
 
         placesMgr.executeHttpRequestToFindSearchedRestaurants(search, new DisposableObserver<AutocompleteAPI>(){
 
@@ -369,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements
                         public void onComplete() {}
                     });
                 }
-                setNearbyRestaurantsList(placesIds);
+                setRestaurantsList(placesIds);
             }
 
             @Override
@@ -381,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private void setNearbyRestaurantsList(String [] placesIds){
+    private void setRestaurantsList(String [] placesIds){
         final List<PlacesAPI.Result> nearbyRestaurants = new ArrayList<>();
 
         for(int i = 0; i<placesIds.length; i++){
@@ -445,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements
                 showCurrentLocationAndEnableControls();
 
                 // Get the current location of the device and set the position of the map.
-                getDeviceLocation();
+                getDeviceLocationToShowNearbyRestaurants();
 
                 //Position Location Button in the bottom right corner
                 positionLocationButton();
@@ -455,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private void getDeviceLocation() {
+    private void getDeviceLocationToShowNearbyRestaurants() {
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
@@ -475,15 +462,12 @@ public class MainActivity extends AppCompatActivity implements
 
                             placesMgr.setCurrentLocation(mLastKnownLocation);
 
-                            List<PlacesAPI.Result> nearbyRestaurants = placesMgr.getNearbyRestaurants();
-
-                            if(nearbyRestaurants == null){
-                                Log.e("MA getDevLoc", "no nearby restaurant list existing");
-                                getNearbyRestaurants();
+                            //Get and show restaurants from httpRequest if not done yet
+                            if(placesMgr.getNearbyRestaurants() == null){
+                                getAndShowNearbyRestaurants();
                             }else{
-                                for(int i = 0; i<nearbyRestaurants.size(); i++){
-                                    Log.e("MA getDevLoc", "nearby restaurant exists");
-                                    showRestaurantOnMapWithMarker(nearbyRestaurants.get(i));
+                                for(int i = 0; i<placesMgr.getNearbyRestaurants().size(); i++){
+                                    showRestaurantOnMapWithMarker(placesMgr.getNearbyRestaurants().get(i));
                                 }
                             }
 
@@ -548,17 +532,6 @@ public class MainActivity extends AppCompatActivity implements
                     .setTag(tag);
     }
 
-    // --------------------------
-    // REQUESTS
-    // --------------------------
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        if(this.mDisposable != null && !this.mDisposable.isDisposed())
-            this.mDisposable.dispose();
-    }
-
 
     // -----------------
     // PERMISSIONS
@@ -595,6 +568,7 @@ public class MainActivity extends AppCompatActivity implements
         showCurrentLocationAndEnableControls();
     }
 
+
     // -----------------
     // USER MANAGEMENT
     // -----------------
@@ -612,6 +586,11 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 });
     }
+    
+
+    // -----------------
+    // INTENTS
+    // -----------------
 
     private void goToDetailActivity(){
         UserHelper.getUser(this.getCurrentUser().getUid())
