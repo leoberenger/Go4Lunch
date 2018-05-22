@@ -8,8 +8,8 @@
     <dimen name="text_size_mini">8sp</dimen>
 
     <!-- LOGIN ACTIVITY -->
-    <dimen name="login_title_size">20sp</dimen>
-    <dimen name="login_text_size">14sp</dimen>
+    <dimen name="login_title_size">40sp</dimen>
+    <dimen name="login_text_size">20sp</dimen>
 
     <dimen name="cardview_center_layout_height">100dp</dimen>
     <dimen name="cardview_fab_padding">20dp</dimen>
