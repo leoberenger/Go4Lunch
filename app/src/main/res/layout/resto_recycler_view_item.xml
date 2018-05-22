@@ -88,9 +88,9 @@
 
         <ImageView
             android:id="@+id/resto_recycler_view_item_img"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="5dp"
+            android:layout_width="@dimen/recycler_view_img_width"
+            android:layout_height="@dimen/recycler_view_img_height"
+            android:layout_margin="@dimen/margin"
             android:src="@drawable/blurred_restaurant"/>
 
     </LinearLayout>

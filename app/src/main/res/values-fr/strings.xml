@@ -42,4 +42,5 @@
     <string name="popup_message_choice_yes">Oui!</string>
     <string name="popup_message_choice_no">Non</string>
     <string name="notification_title">Vous avez reçu une notification</string>
+    <string name="navigation_drawer_img_description">Image de profil</string>
 </resources>

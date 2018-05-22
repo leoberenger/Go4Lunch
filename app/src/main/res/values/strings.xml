@@ -16,6 +16,7 @@
     <string name="logout">Logout</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_img_description">Profile Image</string>
 
     <!-- Search Bar -->
     <string name="search_title">Search restaurant</string>
