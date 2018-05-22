@@ -113,32 +113,83 @@
                 android:background="@android:color/white"
                 android:orientation="horizontal">
 
-                <Button
+                <RelativeLayout
+                    android:id="@+id/activity_detail_call_relative_layout"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:background="@android:color/white"
-                    android:text="@string/call"
-                    android:id="@+id/activity_detail_phone_btn"
-                    android:drawableTop="@drawable/ic_phone_black_24dp"/>
+                    android:clickable="true">
 
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/white"
-                    android:text="@string/like"
-                    android:id="@+id/activity_detail_like_btn"
-                    android:drawableTop="@drawable/ic_star_rate_black_18dp" />
+                    <ImageView
+                        android:id="@+id/activity_detail_call_img"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/detail_icon_height"
+                        android:layout_margin="@dimen/margin"
+                        android:src="@drawable/ic_phone_black_24dp" />
 
-                <Button
+                    <TextView
+                        android:id="@+id/activity_detail_call_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/title_size"
+                        android:text="@string/call"
+                        android:textColor="@android:color/black"
+                        android:gravity="center"
+                        android:layout_below="@id/activity_detail_call_img"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/activity_detail_like_relative_layout"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:background="@android:color/white"
-                    android:text="@string/website"
-                    android:id="@+id/activity_detail_website_btn"
-                    android:drawableTop="@drawable/ic_public_black_24dp"/>
+                    android:clickable="true">
+
+                    <ImageView
+                        android:id="@+id/activity_detail_like_img"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/detail_icon_height"
+                        android:layout_margin="@dimen/margin"
+                        android:src="@drawable/ic_star_rate_black_18dp" />
+
+                    <TextView
+                        android:id="@+id/activity_detail_like_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/title_size"
+                        android:text="@string/like"
+                        android:textColor="@android:color/black"
+                        android:gravity="center"
+                        android:layout_below="@id/activity_detail_like_img"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/activity_detail_website_relative_layout"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:clickable="true">
+
+                    <ImageView
+                        android:id="@+id/activity_detail_website_img"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/detail_icon_height"
+                        android:layout_margin="@dimen/margin"
+                        android:src="@drawable/ic_public_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/activity_detail_website_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/title_size"
+                        android:text="@string/website"
+                        android:textColor="@android:color/black"
+                        android:gravity="center"
+                        android:layout_below="@id/activity_detail_website_img"/>
+
+                </RelativeLayout>
 
             </LinearLayout>
 

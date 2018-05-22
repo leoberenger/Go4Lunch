@@ -11,6 +11,9 @@
     <dimen name="login_title_size">40sp</dimen>
     <dimen name="login_text_size">20sp</dimen>
 
+    <!-- DETAIL ACTIVITY -->
+    <dimen name="detail_icon_height">40dp</dimen>
+
     <dimen name="cardview_center_layout_height">100dp</dimen>
     <dimen name="cardview_fab_padding">20dp</dimen>
 

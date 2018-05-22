@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,9 +40,6 @@ public class DetailActivity extends BaseActivity {
 
     @BindView(R.id.activity_detail_name) TextView mTextViewName;
     @BindView(R.id.activity_detail_type_and_address) TextView mTextViewTypeAndAddress;
-    @BindView(R.id.activity_detail_like_btn) Button likeBtn;
-    @BindView(R.id.activity_detail_phone_btn) Button phoneBtn;
-    @BindView(R.id.activity_detail_website_btn) Button websiteBtn;
     @BindView(R.id.activity_detail_header_image) ImageView headerImg;
     @BindView(R.id.activity_detail_toolbar) Toolbar toolbar;
     @BindView(R.id.activity_detail_select_resto_fab) FloatingActionButton selectRestoFab;
@@ -189,7 +187,7 @@ public class DetailActivity extends BaseActivity {
     // ACTIONS
     //-------------------------
 
-    @OnClick(R.id.activity_detail_like_btn)
+    @OnClick(R.id.activity_detail_like_relative_layout)
     public void onClickLikeButton() {
         String restoLikeUrl = place.getUrl();
         if(restoLikeUrl == null){
@@ -201,8 +199,8 @@ public class DetailActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.activity_detail_phone_btn)
-    public void onClickPhoneButton() {
+    @OnClick(R.id.activity_detail_call_relative_layout)
+    public void onClickPhone() {
         String phoneNumber = "tel:" + place.getInternationalPhoneNumber();
         Intent callIntent = new Intent(Intent.ACTION_DIAL);
         callIntent.setData(Uri.parse(phoneNumber));
@@ -210,8 +208,8 @@ public class DetailActivity extends BaseActivity {
 
     }
 
-    @OnClick(R.id.activity_detail_website_btn)
-    public void onClickWebsiteButton() {
+    @OnClick(R.id.activity_detail_website_relative_layout)
+    public void onClickWebsite() {
         String websiteUrl = place.getWebsite();
         if(websiteUrl == null){
             Toast.makeText(getApplication(), "No website", Toast.LENGTH_LONG).show();
