@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.widget.Button;
 
 import com.firebase.ui.auth.AuthUI;
@@ -17,7 +16,6 @@ import com.openclassrooms.go4lunch.controllers.activities.base.BaseActivity;
 import java.util.Arrays;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity {

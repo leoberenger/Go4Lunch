@@ -3,10 +3,10 @@ package com.openclassrooms.go4lunch.controllers.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +15,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.controllers.activities.DetailActivity;
-import com.openclassrooms.go4lunch.managers.PlacesMgr;
 import com.openclassrooms.go4lunch.managers.WorkmatesMgr;
 import com.openclassrooms.go4lunch.models.User;
-import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 import com.openclassrooms.go4lunch.utils.ItemClickSupport;
-import com.openclassrooms.go4lunch.views.RestoRecyclerAdapter;
 import com.openclassrooms.go4lunch.views.WorkmatesRecyclerAdapter;
 
 import java.util.ArrayList;
@@ -43,7 +40,7 @@ public class WorkmatesListFragment extends Fragment {
     public WorkmatesListFragment() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recycler_view, container, false);
         ButterKnife.bind(this, view);
 
@@ -63,14 +60,14 @@ public class WorkmatesListFragment extends Fragment {
     // CONFIGURATION
     // -----------------
 
-    void configureRecyclerView(){
+    private void configureRecyclerView(){
         this.workmates = new ArrayList<>();
         this.adapter = new WorkmatesRecyclerAdapter(this.workmates, Glide.with(this), true);
         this.mRecyclerView.setAdapter(this.adapter);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    void configureOnClickRecyclerView(){
+    private void configureOnClickRecyclerView(){
         ItemClickSupport.addTo(mRecyclerView, R.layout.resto_recycler_view_item)
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                     @Override
@@ -93,7 +90,7 @@ public class WorkmatesListFragment extends Fragment {
     // UPDATE UI
     // -----------------
 
-    void updateUI(List<User> users){
+    private void updateUI(List<User> users){
         workmates.clear();
         workmates.addAll(users);
         adapter.notifyDataSetChanged();

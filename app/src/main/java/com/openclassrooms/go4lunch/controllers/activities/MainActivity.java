@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         // 4 - Handle Navigation Item Click
         int id = item.getItemId();
@@ -336,7 +336,6 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onNext(AutocompleteAPI places) {
-                Log.e("MA getSearchedResto", "On Next");
 
                 String [] placesIds = new String[places.getPredictions().size()];
 
@@ -410,7 +409,7 @@ public class MainActivity extends AppCompatActivity implements
                     workmatesMgr.setWorkmates(workmates);
 
                 } else {
-                    Log.e("MainActivit getAllUsers", "Error getting documents: ", task.getException());
+                    Log.e("MA getAllUsers", "Error getting documents: ", task.getException());
                 }
             }
         });

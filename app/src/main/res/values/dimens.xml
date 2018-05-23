@@ -5,7 +5,6 @@
     <dimen name="icon_size">20dip</dimen>
     <dimen name="title_size">20sp</dimen>
     <dimen name="text_size">14sp</dimen>
-    <dimen name="text_size_mini">8sp</dimen>
 
     <!-- LOGIN ACTIVITY -->
     <dimen name="login_title_size">20sp</dimen>

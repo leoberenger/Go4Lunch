@@ -2,12 +2,8 @@ package com.openclassrooms.go4lunch.notifications;
 
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobRequest;

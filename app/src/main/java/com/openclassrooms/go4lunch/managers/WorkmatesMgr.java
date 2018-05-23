@@ -1,7 +1,6 @@
 package com.openclassrooms.go4lunch.managers;
 
 import com.openclassrooms.go4lunch.models.User;
-import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import java.util.List;
 

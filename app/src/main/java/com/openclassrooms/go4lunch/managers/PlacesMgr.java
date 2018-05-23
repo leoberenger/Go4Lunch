@@ -1,7 +1,6 @@
 package com.openclassrooms.go4lunch.managers;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.openclassrooms.go4lunch.apis.GMPlacesStreams;
 import com.openclassrooms.go4lunch.models.googlemaps.AutocompleteAPI;

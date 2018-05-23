@@ -3,7 +3,6 @@ package com.openclassrooms.go4lunch.controllers.activities.base;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -27,7 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this); //Configure Butterknife
     }
 
-    public abstract int getFragmentLayout();
+    protected abstract int getFragmentLayout();
 
 
     // --------------------

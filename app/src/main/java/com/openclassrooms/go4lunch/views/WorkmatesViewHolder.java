@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.bumptech.glide.RequestManager;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.models.User;
-import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,10 +17,8 @@ import butterknife.ButterKnife;
  */
 
 public class WorkmatesViewHolder extends RecyclerView.ViewHolder{
-    @BindView(R.id.workmates_item_text)
-    TextView mTitle;
-    @BindView(R.id.workmates_item_img)
-    ImageView mImage;
+    @BindView(R.id.workmates_item_text) TextView mTitle;
+    @BindView(R.id.workmates_item_img) ImageView mImage;
 
     public WorkmatesViewHolder(View itemView){
         super(itemView);

@@ -2,17 +2,14 @@ package com.openclassrooms.go4lunch.views;
 
 import android.location.Location;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.RequestManager;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.managers.PlacesMgr;
 import com.openclassrooms.go4lunch.managers.WorkmatesMgr;
-import com.openclassrooms.go4lunch.models.googlemaps.Geometry;
 import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import butterknife.BindView;
@@ -25,7 +22,7 @@ import butterknife.ButterKnife;
 public class RestoViewHolder extends RecyclerView.ViewHolder{
     @BindView(R.id.resto_recycler_view_item_name) TextView mName;
     @BindView(R.id.resto_recycler_view_item_img) ImageView mImage;
-    @BindView(R.id.resto_recycler_view_item_nb_workmates)TextView mNbWorkmates;
+    @BindView(R.id.resto_recycler_view_item_nb_workmates) TextView mNbWorkmates;
     @BindView(R.id.resto_recycler_view_item_address) TextView mAddress;
     @BindView(R.id.resto_recycler_view_item_distance) TextView mDistance;
     @BindView(R.id.resto_recycler_view_item_opening_hours) TextView mOpeningHours;
@@ -34,9 +31,9 @@ public class RestoViewHolder extends RecyclerView.ViewHolder{
     @BindView(R.id.resto_recycler_view_item_star_3) ImageView star3;
 
 
-    WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
-    PlacesMgr placesMgr = PlacesMgr.getInstance();
-    String APIKEY = "AIzaSyCQo0hGB4Wbb7r59_vuqQ5Aksk6MM8_St0";
+    private WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
+    private PlacesMgr placesMgr = PlacesMgr.getInstance();
+    private String APIKEY = "AIzaSyCQo0hGB4Wbb7r59_vuqQ5Aksk6MM8_St0";
 
     public RestoViewHolder(View itemView){
         super(itemView);
@@ -99,7 +96,7 @@ public class RestoViewHolder extends RecyclerView.ViewHolder{
         }
     }
 
-    public static int getDistance(double startLati, double startLongi, double goalLati, double goalLongi){
+    private static int getDistance(double startLati, double startLongi, double goalLati, double goalLongi){
         float[] resultArray = new float[99];
         Location.distanceBetween(startLati, startLongi, goalLati, goalLongi, resultArray);
         return (int) resultArray[0];

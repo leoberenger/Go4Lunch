@@ -9,9 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,8 +50,8 @@ public class DetailActivity extends BaseActivity {
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
     private WorkmatesRecyclerAdapter adapter;
 
-    WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
-    PlacesMgr placesMgr = PlacesMgr.getInstance();
+    private WorkmatesMgr workmatesMgr = WorkmatesMgr.getInstance();
+    private PlacesMgr placesMgr = PlacesMgr.getInstance();
     private List<User> workmates;
     private String placeId;
     private String placeName;

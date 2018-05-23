@@ -1,6 +1,7 @@
 package com.openclassrooms.go4lunch.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,6 @@ import android.view.ViewGroup;
 import com.bumptech.glide.RequestManager;
 import com.openclassrooms.go4lunch.R;
 import com.openclassrooms.go4lunch.models.User;
-import com.openclassrooms.go4lunch.models.googlemaps.PlacesAPI;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class WorkmatesRecyclerAdapter extends RecyclerView.Adapter<WorkmatesView
     //FOR DATA
     private final List<User> workmates;
     private final RequestManager glide;
-    boolean isMainActivityFragment = false;
+    private boolean isMainActivityFragment = false;
 
     //CONSTRUCTOR
     public WorkmatesRecyclerAdapter(List<User> workmates, RequestManager glide, boolean isMainActivityFragment){
@@ -35,8 +35,9 @@ public class WorkmatesRecyclerAdapter extends RecyclerView.Adapter<WorkmatesView
         return this.workmates.get(position);
     }
 
+    @NonNull
     @Override
-    public WorkmatesViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public WorkmatesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.workmates_recycler_view_item, parent, false);
@@ -45,7 +46,7 @@ public class WorkmatesRecyclerAdapter extends RecyclerView.Adapter<WorkmatesView
     }
 
     @Override
-    public void onBindViewHolder(WorkmatesViewHolder viewHolder, int position){
+    public void onBindViewHolder(@NonNull WorkmatesViewHolder viewHolder, int position){
         viewHolder.updateWithUser(this.workmates.get(position), this.glide, this.isMainActivityFragment);
     }
 

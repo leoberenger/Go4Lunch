@@ -3,6 +3,7 @@ package com.openclassrooms.go4lunch.controllers.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,16 +31,15 @@ import butterknife.ButterKnife;
 public class RestoListFragment extends Fragment {
 
     // FOR DESIGN
-    @BindView(R.id.recycler_view)
-    protected RecyclerView mRecyclerView;
+    @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
     private RestoRecyclerAdapter adapter;
     private List<PlacesAPI.Result> nearbyRestaurants;
-    PlacesMgr placesMgr = PlacesMgr.getInstance();
+    private PlacesMgr placesMgr = PlacesMgr.getInstance();
 
     public RestoListFragment() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recycler_view, container, false);
         ButterKnife.bind(this, view);
 
@@ -56,14 +56,14 @@ public class RestoListFragment extends Fragment {
     // CONFIGURATION
     // -----------------
 
-    void configureRecyclerView(){
+    private void configureRecyclerView(){
         this.nearbyRestaurants = new ArrayList<>();
         this.adapter = new RestoRecyclerAdapter(this.nearbyRestaurants, Glide.with(this));
         this.mRecyclerView.setAdapter(this.adapter);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    void configureOnClickRecyclerView(){
+    private void configureOnClickRecyclerView(){
         ItemClickSupport.addTo(mRecyclerView, R.layout.resto_recycler_view_item)
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                     @Override
@@ -80,7 +80,7 @@ public class RestoListFragment extends Fragment {
     // UPDATE UI
     // -----------------
 
-    void showNearbyRestaurants(){
+    private void showNearbyRestaurants(){
         List<PlacesAPI.Result> places = placesMgr.getNearbyRestaurants();
         this.nearbyRestaurants.clear();
         this.nearbyRestaurants.addAll(places);

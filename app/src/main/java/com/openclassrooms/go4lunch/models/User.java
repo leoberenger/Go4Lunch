@@ -16,7 +16,7 @@ public class User {
 
     public User() { }
 
-    public User(String userId, String username, String urlPicture, String selectedRestoId, String selectedRestoName) {
+    public User(String userId, String username, @Nullable String urlPicture, @Nullable String selectedRestoId, @Nullable String selectedRestoName) {
         this.userId = userId;
         this.username = username;
         this.urlPicture = urlPicture;
