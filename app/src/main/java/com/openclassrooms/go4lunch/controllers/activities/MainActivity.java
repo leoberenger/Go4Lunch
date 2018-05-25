@@ -170,6 +170,15 @@ public class MainActivity extends AppCompatActivity implements
                 mMap.clear();
                 getAndShowSearchedRestaurants(query);
                 searchView.clearFocus();
+
+                //update RestoList
+                RestoListFragment restoListFragment = (RestoListFragment)
+                        getSupportFragmentManager().findFragmentById(R.id.recycler_view);
+
+                if(restoListFragment != null) {
+                    restoListFragment.showNearbyRestaurants();
+                }
+
                 return true;
             }
 
@@ -250,10 +259,6 @@ public class MainActivity extends AppCompatActivity implements
         String userEmail = getCurrentUser().getEmail();
         Uri userPhotoUrl = getCurrentUser().getPhotoUrl();
 
-        Log.e("MainAct configNavView", "username = " + userName);
-        Log.e("MainAct configNavView", "user email = " + userEmail);
-        Log.e("MainAct configNavView", "user photoUrl = " + userPhotoUrl);
-
         View hView =  navigationView.getHeaderView(0);
         ImageView nav_picture = (ImageView)hView.findViewById(R.id.nav_header_profile_img);
         TextView nav_user = (TextView)hView.findViewById(R.id.nav_header_username);
@@ -262,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements
         Glide.with(getApplicationContext())
                 .load(userPhotoUrl)
                 .into(nav_picture);
-        //glide.load().into(nav_picture);
         nav_user.setText(userName);
         nav_email.setText(userEmail);
     }

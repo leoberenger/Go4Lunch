@@ -80,7 +80,7 @@ public class RestoListFragment extends Fragment {
     // UPDATE UI
     // -----------------
 
-    private void showNearbyRestaurants(){
+    public void showNearbyRestaurants(){
         List<PlacesAPI.Result> places = placesMgr.getNearbyRestaurants();
         this.nearbyRestaurants.clear();
         this.nearbyRestaurants.addAll(places);
