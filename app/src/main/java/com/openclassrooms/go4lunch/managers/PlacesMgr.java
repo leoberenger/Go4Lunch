@@ -60,7 +60,7 @@ public class PlacesMgr {
     }
 
     // --------------------------
-    // REQUESTS
+    // HTTP REQUESTS
     // --------------------------
 
     public void executeHttpRequestToFindNearbyRestaurants(DisposableObserver<PlacesAPI> observer){

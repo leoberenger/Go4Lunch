@@ -91,7 +91,7 @@ public class DetailActivity extends BaseActivity {
 
 
     //-------------------------
-    // GET DATE
+    // GET DATA
     //-------------------------
 
     private void getRestaurantDetails(String placeId){

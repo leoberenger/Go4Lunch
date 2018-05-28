@@ -12,6 +12,8 @@ import butterknife.ButterKnife;
 
 public class WebviewActivity extends AppCompatActivity {
 
+    private final String RESTAURANT_URL_KEY = "articleUrl";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +42,7 @@ public class WebviewActivity extends AppCompatActivity {
             String articleUrl = intent.getStringExtra("EXTRA_WEBSITE_URL");
 
             Bundle args = new Bundle();
-            args.putString("articleUrl", articleUrl);
+            args.putString(RESTAURANT_URL_KEY, articleUrl);
             webviewFragment.setArguments(args);
         }
     }

@@ -42,16 +42,20 @@ public class RestoViewHolder extends RecyclerView.ViewHolder{
 
 
     public void updateWithRestaurant(PlacesAPI.Result result, RequestManager glide){
+        //Name
         this.mName.setText(result.getName());
 
+        //Adress and type
         String typeAndAddress = result.getTypes().get(0) + " - " + result.getFormattedAddress();
         this.mAddress.setText(typeAndAddress);
 
+        //Opening hours
         if((result.getOpeningHours() !=null) && (result.getOpeningHours().getOpenNow() != null)){
             String openingHours = (result.getOpeningHours().getOpenNow())? "Open" : "Closed";
             this.mOpeningHours.setText(openingHours);
         }
 
+        //Distance
         Location currentLocation = placesMgr.getCurrentLocation();
         Double currentLng = currentLocation.getLongitude();
         Double currentLat = currentLocation.getLatitude();
@@ -61,10 +65,12 @@ public class RestoViewHolder extends RecyclerView.ViewHolder{
         String distance = String.valueOf(distanceInt) + " m";
         this.mDistance.setText(distance);
 
+        //Number of colleagues going
         int nbWorkmatesGoingToThisRestaurant = workmatesMgr.getNbWorkmatesGoing(result.getPlaceId());
         String nbWorkmates = "(" + String.valueOf(nbWorkmatesGoingToThisRestaurant) + ")";
         this.mNbWorkmates.setText(nbWorkmates);
 
+        //Rating
         if(result.getRating() != null){
             double rating = result.getRating();
             int nbStars = (int)(((rating)/5)*3);
@@ -87,6 +93,7 @@ public class RestoViewHolder extends RecyclerView.ViewHolder{
             }
         }
 
+        //Photo
         if((result.getPhotos() != null)&& (result.getPhotos().get(0)!=null)){
             String photoUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference="
                     + result.getPhotos().get(0).getPhotoReference()

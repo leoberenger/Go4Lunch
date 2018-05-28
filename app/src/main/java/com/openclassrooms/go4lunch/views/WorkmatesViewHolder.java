@@ -28,6 +28,7 @@ public class WorkmatesViewHolder extends RecyclerView.ViewHolder{
 
     public void updateWithUser(User workmate, RequestManager glide, boolean isMainActivityFragment){
 
+        //Name
         String text;
         if(isMainActivityFragment){
             text = (workmate.getSelectedRestoId()== null)?
@@ -38,6 +39,8 @@ public class WorkmatesViewHolder extends RecyclerView.ViewHolder{
         }
 
         this.mTitle.setText(text);
+
+        //Photo
         glide.load(workmate.getUrlPicture()).into(mImage);
     }
 
