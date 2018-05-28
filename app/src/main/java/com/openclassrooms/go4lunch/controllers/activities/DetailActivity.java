@@ -67,7 +67,6 @@ public class DetailActivity extends BaseActivity {
         Intent intent = getIntent();
         placeId = intent.getStringExtra("PLACE_ID");
 
-        this.configureToolBar();
         this.configureRecyclerView();
 
         getRestaurantDetails(placeId);
@@ -82,11 +81,6 @@ public class DetailActivity extends BaseActivity {
     //-------------------------
     // CONFIGURATION
     //-------------------------
-
-    private void configureToolBar(){
-        this.toolbar = (Toolbar) findViewById(R.id.activity_detail_toolbar);
-        setSupportActionBar(toolbar);
-    }
 
     private void configureRecyclerView(){
         this.workmates = new ArrayList<>();
